@@ -345,17 +345,17 @@ Livewire component's `mount` method MUST be a first method in a class.
 class EmailInput extends Component
 {
     public string $email = '';
+    
+    public function mount(User $user): void
+    {
+        $this->email = $user->email ?? '';
+    }
 
     public function rules(): array
     {
         return [
             'email' => ['required', 'email'],
         ];
-    }
-    
-    public function mount(User $user): void
-    {
-        $this->email = $user->email ?? '';
     }
     
     public function render(): View
