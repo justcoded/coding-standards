@@ -1,6 +1,6 @@
 ## Naming and other conventions
 
-### 1 Artisan Commands
+### 1. Artisan Commands
 The names given to artisan commands MUST all be kebab-cased.
 
 :white_check_mark: ***Good***
@@ -32,7 +32,7 @@ php artisan show-latest-audit-records
 php artisan prune-stale-audit-records
 ```
 
-### 2 Config
+### 2. Config
 Configuration files MUST use `kebab-case`.
 
 :white_check_mark: ***Good***
@@ -76,7 +76,7 @@ return [
 ];
 ```
 
-### 3 Controllers
+### 3. Controllers
 Controllers that control a resource MUST use the plural resource name.
 
 :white_check_mark: ***Good***
@@ -113,7 +113,7 @@ class UploadFileController extends Controller
 }
 ```
 
-### 4 FormRequests and Forms
+### 4. FormRequests and Forms
 FormRequests and Forms MUST use the singular resource name.
 
 :white_check_mark: ***Good***
@@ -146,7 +146,7 @@ class UsersForm extends Form
 }
 ```
 
-### 5 Resources
+### 5. Resources
 Eloquent Resources MUST use the singular resource name.
 
 :white_check_mark: ***Good***
@@ -179,17 +179,17 @@ class UsersCollectionResource extends Resource
 }
 ```
 
-### 6 Routing
+### 6. Routing
 You SHOULD use the route tuple notation when possible.
 
 :white_check_mark: ***Good***
 ```php
-Route::get('/users', [UserController::class, 'index']);
+Route::get('/users', [UsersController::class, 'index']);
 ```
 
 :x: ***Bad***
 ```php
-Route::get('/users', 'UserController@index');
+Route::get('/users', 'UsersController@index');
 ```
 
 Route names SHOULD use plural resource name as prefix followed by action with `.` as a glue.
@@ -197,7 +197,7 @@ Route names should use `snake_case`.
 
 :white_check_mark: ***Good***
 ```php
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::get('/users', [UsersController::class, 'index'])->name('users.index');
 ```
 
 :white_check_mark: ***Good***
@@ -256,8 +256,7 @@ class FileUploadController extends Controller
 }
 ```
 
-### 7 Views
-
+### 7. Views
 Views should use `kebab-case`
 
 :white_check_mark: ***Good***
@@ -270,7 +269,7 @@ file-upload.blade.php
 file_upload.blade.php
 ```
 
-### 8 Validation
+### 8. Validation
 When using multiple rules for one field in a form request, avoid using `|`, you SHOULD always use array notation.
 Using an array notation will make it easier to apply custom rule classes to a field and resolve conflicts.
 
@@ -291,5 +290,102 @@ public function rules(): array
     return [
         'email' => 'required|email',
     ];
+}
+```
+
+### 8. Livewire
+#### 8.1 `render()`
+Livewire component's `render` method MUST be a last method in a class.
+
+:white_check_mark: ***Good***
+```php
+class EmailInput extends Component
+{
+    public string $email = '';
+
+    public function rules(): array
+    {
+        return [
+            'email' => ['required', 'email'],
+        ];
+    }
+    
+    public function render(): View
+    {
+        return view('livewire.components.inputs.email');
+    }
+}
+```
+
+:x: ***Bad***
+```php
+class EmailInput extends Component
+{
+    public string $email = '';
+    
+    public function render(): View
+    {
+        return view('livewire.components.inputs.email');
+    }
+
+    public function rules(): array
+    {
+        return [
+            'email' => ['required', 'email'],
+        ];
+    }
+}
+```
+
+#### 8.2 `mount()`
+Livewire component's `mount` method MUST be a first method in a class.
+
+:white_check_mark: ***Good***
+```php
+class EmailInput extends Component
+{
+    public string $email = '';
+
+    public function rules(): array
+    {
+        return [
+            'email' => ['required', 'email'],
+        ];
+    }
+    
+    public function mount(User $user): void
+    {
+        $this->email = $user->email ?? '';
+    }
+    
+    public function render(): View
+    {
+        return view('livewire.components.inputs.email');
+    }
+}
+```
+
+:x: ***Bad***
+```php
+class EmailInput extends Component
+{
+    public string $email = '';
+
+    public function rules(): array
+    {
+        return [
+            'email' => ['required', 'email'],
+        ];
+    }
+    
+    public function mount(User $user): void
+    {
+        $this->email = $user->email ?? '';
+    }
+    
+    public function render(): View
+    {
+        return view('livewire.components.inputs.email');
+    }
 }
 ```

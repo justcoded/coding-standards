@@ -7,7 +7,7 @@ This specification extends [PER-1 Coding Style 2.0](https://www.php-fig.org/per/
 Please read it carefully first. 
 
 
-### 1 Strict types
+### 1. Strict types
 All php only files MUST have `declare(strict_types=1);` statement.
 
 
@@ -27,7 +27,7 @@ namespace Vendor\Package;
 namespace Vendor\Package;
 ```
 
-### 2 Import statements
+### 2. Import statements
 Grouping imports SHOULD NOT be used as it's harder to maintain and can lead tto git conflicts.
 
 :white_check_mark: ***Good***
@@ -54,7 +54,7 @@ namespace Vendor\Package;
 use Vendor\Package\{ClassA as A, ClassB, ClassC as C};
 ```
 
-### 3 FQN vs Import
+### 3. FQN vs Import
 Classes, Interfaces and Traits SHOULD always be imported.
 
 :white_check_mark: ***Good***
@@ -99,7 +99,7 @@ class ClassA extends \ClassB
 
 ```
 
-### 4 Typehints and Return types
+### 4. Typehints and Return types
 Class properties and function / method arguments MUST have type specified.
 When property can be of multiple types use Union types feature to list them all.
 
@@ -159,7 +159,7 @@ $users->map(fn(User $user) => $user->name);
 $users->map(fn($user) => $user->name);
 ```
 
-### 5 Docblocks
+### 5. Docblocks
 Docblocks for methods that can be fully type hinted SHOULD be omitted unless you need a description.
 Only add a description when it provides more context than the method signature itself.
 Use full sentences for descriptions, including a period at the end.
@@ -249,7 +249,7 @@ function getUserData(array $users): void {
 }
 ```
 
-### 6 Constructor property promotion
+### 6. Constructor property promotion
 Use constructor property promotion. To make it readable, put each one on a line of its own. Use a comma after the last one.
 
 :white_check_mark: ***Good***
@@ -299,7 +299,7 @@ class EmailAddress
 }
 ```
 
-### 7 Strings
+### 7. Strings
 When possible prefer string interpolation above `sprintf` and the `.` operator.
 
 :white_check_mark: ***Good***
@@ -318,7 +318,7 @@ $greeting = sprintf('Hi, I am %s.', $name);
 ```
 
 
-### 8 Ternary operators
+### 8. Ternary operators
 Every portion of a ternary expression should be on its own line unless it's a really short expression.
 
 :white_check_mark: ***Good***
@@ -332,7 +332,7 @@ $userData = $user instanceof AdminUser
     : $user->publicData();
 ```
 
-### 9 If statements
+### 9. If statements
 #### 9.1 Brackets
 Curly brackets MUST always be used.
 
@@ -407,7 +407,7 @@ else {
 
 ### 10 Whitespace
 Statements should be allowed to breathe.
-In general you MUST always add blank lines between statements, unless they're a sequence of single-line equivalent operations.
+In general, you MUST always add blank lines between statements, unless they're a sequence of single-line equivalent operations.
 
 :white_check_mark: ***Good***
 ```php
@@ -477,7 +477,7 @@ if ($foo) {
 ```
 
 
-### 11 Spaces and alignment
+### 11. Spaces and alignment
 #### 11.1 Unary `!`
 Unary not SHOULD be followed by space.
 
