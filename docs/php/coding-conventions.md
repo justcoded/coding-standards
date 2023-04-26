@@ -283,6 +283,16 @@ public function rules(): array
 }
 ```
 
+:warning: ***Acceptable***
+```php
+public function rules(): array
+{
+    return [
+        'name' => 'required',
+    ];
+}
+```
+
 :x: ***Bad***
 ```php
 public function rules(): array
