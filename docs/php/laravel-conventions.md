@@ -1,7 +1,28 @@
-## Naming and other conventions
+# Laravel conventions
 
-### 1. Artisan Commands
-The names given to artisan commands MUST all be kebab-cased.
+## 1. Case usage and naming
+### 1.1 Class names
+All classes MUST be named using `PascalCase`.
+
+:white_check_mark: ***Good***
+```shell
+class UserManager
+```
+
+Classes with abbreviations also MUST follow `PascalCase` naming.
+
+:white_check_mark: ***Good***
+```shell
+class GdprManager
+```
+
+:x: ***Bad***
+```shell
+class GDPRManager
+```
+
+### 1.2 Artisan commands
+The names given to artisan commands MUST all use `kebab-case`.
 
 :white_check_mark: ***Good***
 ```shell
@@ -32,7 +53,7 @@ php artisan show-latest-audit-records
 php artisan prune-stale-audit-records
 ```
 
-### 2. Config
+### 1.3 Config files
 Configuration files MUST use `kebab-case`.
 
 :white_check_mark: ***Good***
@@ -76,110 +97,7 @@ return [
 ];
 ```
 
-### 3. Controllers
-Controllers that control a resource MUST use the plural resource name.
-
-:white_check_mark: ***Good***
-```php
-class PostsController extends Controller
-{
-    // ...
-}
-```
-
-:x: ***Bad***
-```php
-class PostController extends Controller
-{
-    // ...
-}
-```
-
-When writing non-resourceful controller you MUST use {Action}Controller naming with correct words position.
-
-:white_check_mark: ***Good***
-```php
-class FileUploadController extends Controller
-{
-    // ...
-}
-```
-
-:x: ***Bad***
-```php
-class UploadFileController extends Controller
-{
-    // ...
-}
-```
-
-### 4. FormRequests and Forms
-FormRequests and Forms MUST use the singular resource name.
-
-:white_check_mark: ***Good***
-```php
-class UserRequest extends FormRequest
-{
-    // ...
-}
-```
-:white_check_mark: ***Good***
-```php
-class UserForm extends Form
-{
-    // ...
-}
-```
-
-:x: ***Bad***
-```php
-class UsersRequest extends FormRequest
-{
-    // ...
-}
-```
-:x: ***Bad***
-```php
-class UsersForm extends Form
-{
-    // ...
-}
-```
-
-### 5. Resources
-Eloquent Resources MUST use the singular resource name.
-
-:white_check_mark: ***Good***
-```php
-class UserResource extends Resource
-{
-    // ...
-}
-```
-:white_check_mark: ***Good***
-```php
-class UserCollectionResource extends CollectionResource
-{
-    // ...
-}
-```
-
-:x: ***Bad***
-```php
-class UsersResource extends Resource
-{
-    // ...
-}
-```
-:x: ***Bad***
-```php
-class UsersCollectionResource extends Resource
-{
-    // ...
-}
-```
-
-### 6. Routing
+### 1.4 Routes
 You SHOULD use the route tuple notation when possible.
 
 :white_check_mark: ***Good***
@@ -232,7 +150,91 @@ Route::get('/basket-items/{basketItem}', [BasketItemsController::class, 'show'])
 Route::get('/basket-items/{basket_item}', [BasketItemsController::class, 'show'])->name('basket_items.show');
 ```
 
+Route file names should use `kebab-case`.
+
+:white_check_mark: ***Good***
+```php
+routes/
+  articles.php
+  article-comments.php
+```
+
+:x: ***Bad***
+```php
+routes/
+  articles.php
+  article_comments.php
+```
+
+### 1.5 Views
+Views SHOULD use `kebab-case` or `snake_case`. Mixing case is forbidden.
+
+:white_check_mark: ***Good***
+```shell
+article-comment.blade.php
+file-upload.blade.php
+```
+
+:warning: ***Acceptable***
+```shell
+article_comment.blade.php
+file_upload.blade.php
+```
+
+:x: ***Bad***
+```shell
+article_comment.blade.php
+file-upload.blade.php
+```
+
+### 1.6. Controllers
+Controllers that control a resource MUST use the plural resource name.
+
+:white_check_mark: ***Good***
+```php
+class PostsController extends Controller
+{
+    // ...
+}
+```
+
+:x: ***Bad***
+```php
+class PostController extends Controller
+{
+    // ...
+}
+```
+
+When writing non-resourceful controller you MUST use {Action}Controller naming with correct words position.
+
+:white_check_mark: ***Good***
+```php
+class FileUploadController extends Controller
+{
+    // ...
+}
+```
+
+:x: ***Bad***
+```php
+class UploadFileController extends Controller
+{
+    // ...
+}
+```
+
 Controllers SHOULD use CRUD methods.
+
+| Verb       | URI               | Action  | Route Name      |
+|------------|-------------------|---------|-----------------|
+| GET        | `/photos`           | index   | photos.index    |
+| GET        | `/photos/create`    | create  | photos.create   |
+| POST       | `/photos/store`     | store   | photos.store    |
+| GET        | `/photos/{photo}`   | show    | photos.show     |
+| GET        | `/photos/{photo}/edit` | edit | photos.edit     |
+| PUT/PATCH  | `/photos/{photo}`   | update  | photos.update   |
+| DELETE     | `/photos/{photo}`   | destroy | photos.destroy  |
 
 :white_check_mark: ***Good***
 ```php
@@ -256,20 +258,73 @@ class FileUploadController extends Controller
 }
 ```
 
-### 7. Views
-Views should use `kebab-case`
+### 1.7. FormRequests and Forms
+FormRequests and Forms MUST use the singular resource name.
 
 :white_check_mark: ***Good***
-```shell
-file-upload.blade.php
+```php
+class UserRequest extends FormRequest
+{
+    // ...
+}
+```
+:white_check_mark: ***Good***
+```php
+class UserForm extends Form
+{
+    // ...
+}
 ```
 
 :x: ***Bad***
-```shell
-file_upload.blade.php
+```php
+class UsersRequest extends FormRequest
+{
+    // ...
+}
+```
+:x: ***Bad***
+```php
+class UsersForm extends Form
+{
+    // ...
+}
 ```
 
-### 8. Validation
+### 1.8. Resources
+Eloquent Resources MUST use the singular resource name.
+
+:white_check_mark: ***Good***
+```php
+class UserResource extends Resource
+{
+    // ...
+}
+```
+:white_check_mark: ***Good***
+```php
+class UserCollectionResource extends CollectionResource
+{
+    // ...
+}
+```
+
+:x: ***Bad***
+```php
+class UsersResource extends Resource
+{
+    // ...
+}
+```
+:x: ***Bad***
+```php
+class UsersCollectionResource extends Resource
+{
+    // ...
+}
+```
+
+### 2. Validation
 When using multiple rules for one field in a form request, avoid using `|`, you SHOULD always use array notation.
 Using an array notation will make it easier to apply custom rule classes to a field and resolve conflicts.
 
@@ -303,8 +358,8 @@ public function rules(): array
 }
 ```
 
-### 8. Livewire
-#### 8.1 `render()`
+### 3. Livewire
+#### 3.1 `render()`
 Livewire component's `render` method MUST be a last method in a class.
 
 :white_check_mark: ***Good***
@@ -347,7 +402,7 @@ class EmailInput extends Component
 }
 ```
 
-#### 8.2 `mount()`
+#### 3.2 `mount()`
 Livewire component's `mount` method MUST be a first method in a class.
 
 :white_check_mark: ***Good***

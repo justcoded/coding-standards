@@ -1,3 +1,5 @@
+# Coding Style
+
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
 in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
@@ -28,7 +30,7 @@ namespace Vendor\Package;
 ```
 
 ### 2. Import statements
-Grouping imports SHOULD NOT be used as it's harder to maintain and can lead tto git conflicts.
+Grouping imports SHOULD NOT be used as it's harder to maintain and can lead to git conflicts.
 
 :white_check_mark: ***Good***
 ```php
@@ -215,7 +217,8 @@ This will greatly help static analysis tools understand the code, and IDEs to pr
 /**
 * @param $users array<int, User> 
 */
-function someFunction(array $users): void {
+function someFunction(array $users): void 
+{
 
 }
 ```
@@ -225,14 +228,16 @@ function someFunction(array $users): void {
 /**
 * @param $users User[] 
 */
-function someFunction(array $users): void {
+function someFunction(array $users): void 
+{
 
 }
 ```
 
 :x: ***Bad***
 ```php
-function someFunction(array $users): void {
+function someFunction(array $users): void 
+{
 
 }
 ```
@@ -244,13 +249,14 @@ If your array or collection has a few fixed keys, you can typehint them too usin
 /**
 * @return array{email: string, name: string, age: int}
 */
-function getUserData(array $users): void {
+function getUserData(array $users): void 
+{
 
 }
 ```
 
 ### 6. Constructor property promotion
-Use constructor property promotion. To make it readable, put each one on a line of its own. Use a comma after the last one.
+Use constructor property promotion. To make it readable, they MUST be put each one on a line of its own (multiline). Use a comma after the last one.
 
 :white_check_mark: ***Good***
 ```php
@@ -338,14 +344,39 @@ Curly brackets MUST always be used.
 
 :white_check_mark: ***Good***
 ```php
-if  ($condition) {
+if ($condition) {
     //
 }
 ```
 
 :x: ***Bad***
 ```php
-if  ($condition) // ..
+if ($condition) // ..
+```
+
+#### 9.2 Multiline conditions
+Logical operators SHOULD be at the beginning of the line. 
+
+:white_check_mark: ***Good***
+```php
+if (
+    $conditionA
+    && $condtionB
+    && $conditionC
+) {
+    //
+}
+```
+
+:x: ***Bad***
+```php
+if (
+    $conditionA &&
+    $condtionB &&
+    $conditionC
+) {
+    //
+}
 ```
 
 #### 9.2 Happy Path
@@ -405,9 +436,9 @@ else {
 }
 ```
 
-### 10 Whitespace
-Statements should be allowed to breathe.
-In general, you MUST always add blank lines between statements, unless they're a sequence of single-line equivalent operations.
+### 10 Line breaks
+Statements SHOULD be allowed to breathe.
+In general, you SHOULD always add blank lines between statements, unless they're a sequence of single-line equivalent operations.
 
 :white_check_mark: ***Good***
 ```php
@@ -479,7 +510,7 @@ if ($foo) {
 
 ### 11. Spaces and alignment
 #### 11.1 Unary `!`
-Unary not SHOULD be followed by space.
+Unary "not" SHOULD be followed by space.
 
 :white_check_mark: ***Good***
 ```php
@@ -508,12 +539,13 @@ Arrays MUST use short syntax.
 array('foo' => 'bar', 'foobar' => 'baz');
 ```
 
-Arrays SHOULD be aligned.
+Arrays SHOULD NOT be aligned. 
+There MUST NOT be mixed alignment style for same project.
 
 :white_check_mark: ***Good***
 ```php
 [
-    'foo'    => 'bar', 
+    'foo' => 'bar', 
     'foobar' => 'baz',
 ];
 ```
@@ -521,10 +553,12 @@ Arrays SHOULD be aligned.
 :warning: ***Acceptable***
 ```php
 [
-    'foo' => 'bar', 
+    'foo'    => 'bar', 
     'foobar' => 'baz',
 ];
 ```
+
+
 
 ### 12 Closures and wrapping
 When deal with Closures and wrapping you SHOULD follow next styling.
@@ -533,10 +567,10 @@ When deal with Closures and wrapping you SHOULD follow next styling.
 ```php
 $query
     ->where(
-        fn(Builder $subQuery): Builder => $subQuery->where(
-            fn(Builder $subSubQuery): Builder => $subSubQuery->whereHas(
+        fn(Builder $query): Builder => $query->where(
+            fn(Builder $query): Builder => $query->whereHas(
               'user',
-              fn(Relation $userQuery): Builder => $userQuery->where(...),
+              fn(Relation $query): Builder => $query->where(...),
             ),
         ),
     )
@@ -546,9 +580,9 @@ $query
 :white_check_mark: ***Good***
 ```php
 User::active()->with([
-    'posts' => fn(Builder $postQuery): Builder => $postQuery->whereHas(
+    'posts' => fn(Builder $query): Builder => $query->whereHas(
         'comments',
-        fn(Relation $commentsQuery): Builder => $commentsQuery->where(...),
+        fn(Relation $query): Builder => $query->where(...),
     )
 ]);
 ```
@@ -558,7 +592,7 @@ User::active()->with([
 User::active()->whereHasMorph(
         'entity', 
         Article::class, 
-        fn(Relation $articleQuery): Builder => $articleQuery->whereIn(Article::table() . '.status', [
+        fn(Relation $query): Builder => $query->whereIn(Article::table() . '.status', [
             ArticeStatus::SCHEDULED->value,    
             ArticeStatus::PUBLISHED->value,    
         ]),
@@ -570,7 +604,7 @@ User::active()->whereHasMorph(
 User::active()->whereHasMorph(
         'entity', 
         Article::class, 
-        fn(Relation $articleQuery): Builder => $articleQuery->whereIn(
+        fn(Relation $query): Builder => $query->whereIn(
             Article::table() . '.status', 
             [
                 ArticeStatus::SCHEDULED->value,    
@@ -587,8 +621,8 @@ When closure has more than one statement you SHOULD use classic closure syntax.
 User::active()->whereHasMorph(
         'entity', 
         Article::class, 
-        function(Relation $articleQuery): Builder {
-            return $articleQuery
+        function(Relation $query): Builder {
+            return $query
                 ->whereIn(Article::table() . '.status', [
                     ArticeStatus::SCHEDULED->value,    
                     ArticeStatus::PUBLISHED->value,    
@@ -602,9 +636,9 @@ User::active()->whereHasMorph(
 User::active()->whereHasMorph(
         'entity', 
         Article::class, 
-        fn(Relation $articleQuery): Builder =>
-            $articleQuery
-                ->whereIn(Article::table() . '.status', [
+        fn(Relation $query): Builder => 
+            $query
+               ->whereIn(Article::table() . '.status', [
                     ArticeStatus::SCHEDULED->value,    
                     ArticeStatus::PUBLISHED->value,    
                 ])
