@@ -215,7 +215,7 @@ This will greatly help static analysis tools understand the code, and IDEs to pr
 :white_check_mark: ***Good***
 ```php
 /**
-* @param $users array<int, User> 
+* @param array<int, User> $users 
 */
 function someFunction(array $users): void 
 {
@@ -226,7 +226,7 @@ function someFunction(array $users): void
 :white_check_mark: ***Good***
 ```php
 /**
-* @param $users User[] 
+* @param User[] $users 
 */
 function someFunction(array $users): void 
 {
@@ -286,7 +286,7 @@ class EmailAddress
 }
 ```
 
-You can combine property promotion and classic syntax.
+You MAY combine property promotion and classic syntax.
 
 :warning: ***Acceptable***
 ```php
@@ -323,7 +323,6 @@ $greeting = 'Hi, I am ' . $name . '.';
 $greeting = sprintf('Hi, I am %s.', $name);
 ```
 
-
 ### 8. Ternary operators
 Every portion of a ternary expression should be on its own line unless it's a really short expression.
 
@@ -337,6 +336,23 @@ $userData = $user instanceof AdminUser
     ? [...$user->publicData(), ...$user->sensitiveData()] 
     : $user->publicData();
 ```
+
+You MUST NOT use nested ternary operators.
+
+:white_check_mark: ***Good***
+```php
+if ($age < 13) {
+    return 'child';
+}
+
+return $age < 18 ? 'teenager' : 'adult';
+```
+
+:x: ***Bad***
+```php
+return $age < 13 ? 'child' : ($age < 18 ? 'teenager' : 'adult');
+```
+
 
 ### 9. If statements
 #### 9.1 Brackets
