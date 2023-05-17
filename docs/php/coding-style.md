@@ -452,7 +452,7 @@ else {
 }
 ```
 
-### 10 Line breaks
+### 10. Line breaks
 Statements SHOULD be allowed to breathe.
 In general, you SHOULD always add blank lines between statements, unless they're a sequence of single-line equivalent operations.
 
