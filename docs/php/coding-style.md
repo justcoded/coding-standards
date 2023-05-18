@@ -20,7 +20,7 @@ Please read it carefully first.
     * [7.2 Multiline conditions](#72-multiline-conditions)
 - [8. Line breaks](#8-line-breaks)
 - [9. Spaces and alignment](#9-spaces-and-alignment)
-    * [9.1 Unary `!`](#91-unary----)
+    * [9.1 Unary `!`](#91-unary-)
     * [9.2 Arrays](#92-arrays)
 - [10. Closures and wrapping](#10-closures-and-wrapping)
 

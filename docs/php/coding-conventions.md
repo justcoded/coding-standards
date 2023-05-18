@@ -19,8 +19,8 @@
     * [2.1.8 Resources](#218-resources)
     * [2.2 Validation](#22-validation)
     * [2.3 Livewire](#23-livewire)
-        + [2.3.1 `render()`](#livewire_render)
-        + [2.3.2 `mount()`](#232--mount---)
+        + [2.3.1 `render()`](#231-render)
+        + [2.3.2 `mount()`](#232-mount)
 
 ## 1. General conventions
 ### 1.1 Typehints and Return types
@@ -595,7 +595,6 @@ public function rules(): array
 ```
 
 ### 2.3 Livewire
-<a name="livewire_render"></a>
 #### 2.3.1 `render()`
 Livewire component's `render` method MUST be a last method in a class.
 
