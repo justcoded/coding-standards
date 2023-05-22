@@ -24,7 +24,7 @@
 
 ## 1. General conventions
 ### 1.1 Typehints and Return types
-Class properties and function / method arguments MUST have type specified.
+Class properties and function / method arguments SHOULD always have type specified.
 When property can be of multiple types use Union types feature to list them all.
 
 :white_check_mark: ***Good***
@@ -164,7 +164,7 @@ function someFunction(array $users): void
 }
 ```
 
-If your array or collection has a few fixed keys, you can typehint them too using {} notation.
+If your array or collection has a few fixed keys, you MAY typehint them too using {} notation.
 
 :white_check_mark: ***Good***
 ```php
