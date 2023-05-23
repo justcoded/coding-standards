@@ -170,13 +170,13 @@ class EmailAddress
 ```
 
 ### 5. Strings
-When possible prefer string interpolation above `sprintf` and the `.` operator.
+When possible you SHOULD use string interpolation instead of `sprintf` and the `.` operator.
+Always use brackets `{}` around variables.
 
 :white_check_mark: ***Good***
 ```php
 $greeting = "Hi, I am {$name}.";
 ```
-
 :x: ***Bad***
 ```php
 $greeting = 'Hi, I am ' . $name . '.';
@@ -185,6 +185,11 @@ $greeting = 'Hi, I am ' . $name . '.';
 :x: ***Bad***
 ```php
 $greeting = sprintf('Hi, I am %s.', $name);
+```
+
+:x: ***Bad***
+```php
+$greeting = "Hi, I am $name.";
 ```
 
 ### 6. Ternary operators

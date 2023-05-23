@@ -7,6 +7,7 @@
     * [1.3 If statements](#13-if-statements)
         + [1.3.1 Happy Path](#131-happy-path)
         + [1.3.2 Avoid else](#132-avoid-else)
+    * [1.4 Arrays](#14-arrays)
 - [2. Laravel conventions](#2-laravel-conventions)
     * [2.1 Case usage and naming](#21-case-usage-and-naming)
         + [2.1.1 Class names](#211-class-names)
@@ -70,17 +71,29 @@ Closures and short closures SHOULD have type hints and return type declarations.
 
 :white_check_mark: ***Good***
 ```php
-$users->map(fn(User $user): string => $user->name);
+$users->map(fn(User $user): string => $this->name($user));
 ```
 
 :warning: ***Acceptable***
 ```php
-$users->map(fn(User $user) => $user->name);
+$users->map(fn(User $user) => $this->name($user));
 ```
 
 :x: ***Bad***
 ```php
-$users->map(fn($user) => $user->name);
+$users->map(fn($user) => $this->name($user));
+```
+
+Closures and short closures SHOULD have `static` modifier if `$this` is not used.
+
+:white_check_mark: ***Good***
+```php
+$users->map(static fn(User $user): string => $user->name);
+```
+
+:warning: ***Acceptable***
+```php
+$users->map(fn(User $user): string => $user->name);
 ```
 
 ### 1.2 Docblocks
@@ -235,25 +248,56 @@ else {
 }
 ```
 
+### 1.4 Arrays
+When possible you SHOULD use `...` syntax to merge arrays.
+
+:white_check_mark: ***Good***
+```php
+$array = [...$arr1, ...$arr2];
+```
+
+:white_check_mark: ***Good***
+```php
+$array = [
+  'user' => 'root',
+  'password' => 'secret',
+  'port' => 22,
+  ...$options,
+];
+```
+
+:warning: ***Acceptable***
+```php
+$array = array_merge($arr1, $arr2);
+```
+
+:warning: ***Acceptable***
+```php
+$array = array_merge([
+  'user' => 'root',
+  'password' => 'secret',
+  'port' => 22,
+], $options);
+```
+
 ## 2. Laravel conventions
 ## 2.1 Case usage and naming
 ### 2.1.1 Class names
 All classes MUST be named using `PascalCase`.
 
 :white_check_mark: ***Good***
-```shell
+```php
 class UserManager
 ```
-
 Classes with abbreviations also MUST follow `PascalCase` naming.
 
 :white_check_mark: ***Good***
-```shell
+```php
 class GdprManager
 ```
 
 :x: ***Bad***
-```shell
+```php
 class GDPRManager
 ```
 
