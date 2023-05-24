@@ -13,7 +13,6 @@ The following guidelines cover how to write HTML example code for frontend devel
   * [Viewport Meta Tag](#viewport-meta-tag)
   * [Case](#case)
   * [Class and ID Names](#class-and-id-names)
-  * [Case](#case-1)
   * [Quote Attribute Values in HTML](#quote-attribute-values-in-html)
   * [Spaces between equal signs in HTML](#spaces-between-equal-signs-in-html)
   * [Boolean attributes](#boolean-attributes)
@@ -95,7 +94,7 @@ Use lowercase for all element names and attribute names/values because it looks 
 
 ## Class and ID Names
 
-Use semantic class/ID names, and separate multiple words with hyphens. Don't use camelCase or any other case. For example:
+Use semantic class/ID/attributes names, and separate multiple words with hyphens. Don't use camelCase or any other case. For example:
 
 :white_check_mark: ***Good***
 
@@ -108,10 +107,6 @@ Use semantic class/ID names, and separate multiple words with hyphens. Don't use
 ```HTML
 <p class="bigRedBox">Blah blah blah</p>
 ```
-
-## Case
-
-Like elements, there is no clear distinction provided by HTML in using upper or lower case names for attributes. However, it is good practice to use lowercase letters for attribute names.
 
 :white_check_mark: ***Good***
 
