@@ -249,7 +249,7 @@ Valid HTML:
 <ul><p></p></ul>
 ```
 
-Semantic tag usage:
+Use semantic tags:
 
 
 :white_check_mark: ***Good***
