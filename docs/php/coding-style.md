@@ -5,7 +5,7 @@ in this document are to be interpreted as described in [RFC 2119](https://datatr
 
 ## Overview
 
-This specification extends [PER Coding Style 2.0](https://www.php-fig.org/per/coding-style/).
+⚠️ This specification extends **[PER Coding Style 2.0](https://www.php-fig.org/per/coding-style/)**.
 Please read it carefully first.
 
 ### Table of contents
@@ -28,7 +28,7 @@ Please read it carefully first.
 See [PER](https://www.php-fig.org/per/coding-style/#3-declare-statements-namespace-and-import-statements)  
 All php only files MUST have `declare(strict_types=1);` statement.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 <?php
 
@@ -37,7 +37,7 @@ declare(strict_types=1);
 namespace Vendor\Package;
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 <?php
 
@@ -48,7 +48,7 @@ namespace Vendor\Package;
 See [PER](https://www.php-fig.org/per/coding-style/#3-declare-statements-namespace-and-import-statements)  
 Grouping imports SHOULD NOT be used as it's harder to maintain and can lead to git conflicts.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 <?php
 
@@ -61,7 +61,7 @@ use Vendor\Package\ClassB;
 use Vendor\Package\ClassC as C;
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 <?php
 
@@ -76,7 +76,7 @@ use Vendor\Package\{ClassA as A, ClassB, ClassC as C};
 See [PER](https://www.php-fig.org/per/coding-style/#3-declare-statements-namespace-and-import-statements)  
 Classes, Interfaces and Traits SHOULD always be imported.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 <?php
 
@@ -98,7 +98,7 @@ class ClassA extends ClassB
 }
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 <?php
 
@@ -122,7 +122,7 @@ class ClassA extends \ClassB
 See [PER](https://www.php-fig.org/per/coding-style/#44-methods-and-functions)  
 Use constructor property promotion. To make it readable, they MUST be put each one on a line of its own (multiline). Use a comma after the last one.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 class EmailAddress 
 {
@@ -134,7 +134,7 @@ class EmailAddress
 
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 class EmailAddress 
 {
@@ -152,7 +152,7 @@ class EmailAddress
 
 You MAY combine property promotion and classic syntax.
 
-:warning: ***Acceptable***
+⚠️ ***Acceptable***
 ```php
 class EmailAddress 
 {
@@ -173,21 +173,21 @@ class EmailAddress
 When possible you SHOULD use string interpolation instead of `sprintf` and the `.` operator.
 Always use brackets `{}` around variables.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 $greeting = "Hi, I am {$name}.";
 ```
-:x: ***Bad***
+❌ ***Bad***
 ```php
 $greeting = 'Hi, I am ' . $name . '.';
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 $greeting = sprintf('Hi, I am %s.', $name);
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 $greeting = "Hi, I am $name.";
 ```
@@ -196,11 +196,11 @@ $greeting = "Hi, I am $name.";
 See [PER](https://www.php-fig.org/per/coding-style/#63-ternary-operators)  
 Every portion of a ternary expression should be on its own line unless it's a really short expression.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 $price = $user->isVip() ? $product->priceWithVipDiscount() : $product->price();
 ```
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 $userData = $user instanceof AdminUser 
     ? [...$user->publicData(), ...$user->sensitiveData()] 
@@ -209,7 +209,7 @@ $userData = $user instanceof AdminUser
 
 You MUST NOT use nested ternary operators.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 if ($age < 13) {
     return 'child';
@@ -218,7 +218,7 @@ if ($age < 13) {
 return $age < 18 ? 'teenager' : 'adult';
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 return $age < 13 ? 'child' : ($age < 18 ? 'teenager' : 'adult');
 ```
@@ -228,14 +228,14 @@ See [PER](https://www.php-fig.org/per/coding-style/#51-if-elseif-else)
 #### 7.1 Brackets
 Curly brackets MUST always be used.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 if ($condition) {
     //
 }
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 if ($condition) // ..
 ```
@@ -244,7 +244,7 @@ if ($condition) // ..
 Logical operators MUST be at the beginning of the line. 
 Same rules MUST be followed for `switch` statement ([PER](https://www.php-fig.org/per/coding-style/#52-switch-case-match)).
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 if (
     $conditionA
@@ -255,7 +255,7 @@ if (
 }
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 if (
     $conditionA &&
@@ -270,7 +270,7 @@ if (
 Statements SHOULD be allowed to breathe.
 In general, you SHOULD always add blank lines between statements, unless they're a sequence of single-line equivalent operations.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 public function getPage($url)
 {
@@ -288,7 +288,7 @@ public function getPage($url)
 }
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 // Everything's cramped together.
 public function getPage($url)
@@ -304,7 +304,7 @@ public function getPage($url)
 }
 ```
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 // A sequence of single-line equivalent operations.
 public function up()
@@ -322,14 +322,14 @@ public function up()
 
 Don't add any extra empty lines between `{}` brackets.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 if ($foo) {
     $this->foo = $foo;
 }
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 if ($foo) {
 
@@ -341,14 +341,14 @@ if ($foo) {
 #### 9.1 Unary `!`
 Unary "not" SHOULD be followed by space.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 if (! $condition) {
     // 
 }
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 if (!$condition) {
     //
@@ -360,7 +360,7 @@ See [PER](https://www.php-fig.org/per/coding-style/#11-arrays)
 Arrays SHOULD NOT be aligned. 
 There MUST NOT be mixed alignment style for same project.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 [
     'foo' => 'bar', 
@@ -368,7 +368,7 @@ There MUST NOT be mixed alignment style for same project.
 ];
 ```
 
-:warning: ***Acceptable***
+⚠️ ***Acceptable***
 ```php
 [
     'foo'    => 'bar', 
@@ -380,7 +380,7 @@ There MUST NOT be mixed alignment style for same project.
 See [PER](https://www.php-fig.org/per/coding-style/#7-closures)  
 When deal with Closures and wrapping you SHOULD follow next styling.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 $query
     ->where(
@@ -394,7 +394,7 @@ $query
     ->get();
 ```
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 User::active()->with([
     'posts' => fn(Builder $query): Builder => $query->whereHas(
@@ -404,7 +404,7 @@ User::active()->with([
 ]);
 ```
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 User::active()->whereHasMorph(
         'entity', 
@@ -416,7 +416,7 @@ User::active()->whereHasMorph(
     );
 ```
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 User::active()->whereHasMorph(
         'entity', 
@@ -433,7 +433,7 @@ User::active()->whereHasMorph(
 
 When closure has more than one statement you SHOULD use classic closure syntax.
 
-:white_check_mark: ***Good***
+✅ ***Good***
 ```php
 User::active()->whereHasMorph(
         'entity', 
@@ -448,7 +448,7 @@ User::active()->whereHasMorph(
         );
 ```
 
-:warning: ***Acceptable***
+⚠️ ***Acceptable***
 ```php
 User::active()->whereHasMorph(
         'entity', 
@@ -467,7 +467,7 @@ User::active()->whereHasMorph(
 
 The `=>` MUST always have expressions by both sides 
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 User::active()->whereHasMorph(
         'entity', 
@@ -485,7 +485,7 @@ User::active()->whereHasMorph(
     );
 ```
 
-:x: ***Bad***
+❌ ***Bad***
 ```php
 User::active()->whereHasMorph(
         'entity', 
