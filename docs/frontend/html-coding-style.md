@@ -11,6 +11,8 @@ The following guidelines cover how to write HTML example code for frontend devel
   * [Document characterset](#document-characterset)
   * [Document Language](#document-language)
   * [Viewport Meta Tag](#viewport-meta-tag)
+  * [Indents](#indents)
+  * [Line Length](#line-length)
   * [Case](#case)
   * [Class and ID Names](#class-and-id-names)
   * [Quote Attribute Values in HTML](#quote-attribute-values-in-html)
@@ -82,7 +84,7 @@ You should include the following [<meta>](https://developer.mozilla.org/en-US/do
 - **Indent by two spaces** per indentation level.
 - **Don't leave trailing spaces** at the end of a line (except as needed for Markdown).
 
-## Line length
+## Line Length
 
 Break lines at 80 characters except in the following cases:
 
