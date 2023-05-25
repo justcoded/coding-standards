@@ -177,12 +177,12 @@ function someFunction(array $users): void
 }
 ```
 
-If your array or collection has a few fixed keys, you MAY typehint them too using {} notation.
+If your array or collection has a few fixed keys, you MAY typehint them too using `{}` notation.
 
 ✅ ***Good***
 ```php
 /**
-* @return array{email: string, name: string, age: int}
+* @param array{email: string, name: string, age: int} $users
 */
 function getUserData(array $users): void 
 {
