@@ -21,8 +21,9 @@ The following guidelines cover how to write HTML example code for frontend devel
   * [Comments](#comments)
     * [Single-line Comments](#single-line-comments)
     * [Multi-line Comments](#multi-line-comments)
-    * [Sensitive Information](#sensitive-information)
+  * [Sensitive Information](#sensitive-information)
   * [Best Practices](#best-practices)
+  * [Helpful Links](#helpful-links)
   
 <!-- TOC -->
 
@@ -35,6 +36,7 @@ Here are some guidelines and tips for creating good HTML code:
 - Use HTML5 semantic tags [Semantic Elements](https://developer.mozilla.org/en-US/docs/Glossary/Semantics#semantic_elements)
 - Avoid an excessive [DOM size](https://developer.chrome.com/docs/lighthouse/performance/dom-size/?utm_source=lighthouse&utm_medium=lr)
 - Follow accessibility best practices [HTML and accessibility](https://developer.mozilla.org/en-US/docs/Learn/Accessibility/HTML)
+- HTML5 code should be valid. Check your code on [W3C Validator](https://validator.w3.org/)
 
 ## Formatting
 
@@ -243,7 +245,7 @@ that spans multiple lines
 -->
 ```
 
-### Sensitive Information
+## Sensitive Information
 
 Sensitive information must not be placed in a comment.
 
@@ -316,3 +318,10 @@ Do not close self-closing elements:
 
 <br />
 ```
+
+## Helpful Links
+
+- [Google HTML Guide](https://google.github.io/styleguide/htmlcssguide.html)
+- [Multiple H1 Headings: How to Handle Them for SEO & Accessibility?](https://www.youtube.com/watch?v=zyqJJXWk0gk)
+- [HTML Style Guide w3schools](https://www.w3schools.com/html/html5_syntax.asp)
+- [10 HTML5 Best Practices for Improving Your Site](https://webtips.dev/10-best-practices-for-html)
