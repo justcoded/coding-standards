@@ -75,7 +75,7 @@ use Vendor\Package\{ClassA as A, ClassB, ClassC as C};
 ### 3. FQN vs Import
 See [PER](https://www.php-fig.org/per/coding-style/#3-declare-statements-namespace-and-import-statements)  
 Classes, Interfaces and Traits SHOULD always be imported.  
-Namespaced functions should be imported and MUST have an alias prefixed by vendor or package.
+Namespaced functions SHOULD be imported and MUST have an alias prefixed by vendor or package.
 
 ✅ ***Good***
 ```php
