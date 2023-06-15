@@ -74,7 +74,8 @@ use Vendor\Package\{ClassA as A, ClassB, ClassC as C};
 
 ### 3. FQN vs Import
 See [PER](https://www.php-fig.org/per/coding-style/#3-declare-statements-namespace-and-import-statements)  
-Classes, Interfaces and Traits SHOULD always be imported.
+Classes, Interfaces and Traits SHOULD always be imported.  
+Namespaced functions SHOULD be imported and MUST have an alias prefixed by vendor or package.
 
 ✅ ***Good***
 ```php
@@ -86,12 +87,13 @@ namespace Vendor\Package;
 
 use ClassB;
 use Exception;
+use function Vendor\Package\check_condition as vendor_check_condition;
 
 class ClassA extends ClassB
 {
     public function foo() 
     {
-        if (! $condition) {
+        if (! vendor_check_condition($condition)) {
             throw new Exception('....');
         }
     } 
@@ -110,12 +112,34 @@ class ClassA extends \ClassB
 {
     public function foo() 
     {
-        if (! $condition) {
+        if (! \Vendor\Package\check_condition($condition)) {
             throw new \Exception('....');
         }
     } 
 } 
 
+```
+❌ ***Bad***
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Vendor\Package;
+
+use ClassB;
+use Exception;
+use function Vendor\Package\check_condition;
+
+class ClassA extends ClassB
+{
+    public function foo() 
+    {
+        if (! check_condition($condition)) {
+            throw new Exception('....');
+        }
+    } 
+}
 ```
 
 ### 4. Constructor property promotion
