@@ -4,7 +4,7 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
-## Unreleased
+## v1.0.0
 * Added PHP specification
 
 -------------------------------------------------------------------------
