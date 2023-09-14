@@ -149,13 +149,14 @@ Developments tips:
 
 ## SCSS
 
-Use the hole power of [SCSS](https://sass-lang.com/) in your project.
+[SCSS](https://sass-lang.com/) is recommended preprocessing languages for projects.
 
-SCSS should follow best practices from [SASS Guidelines](https://sass-guidelin.es/)
+Here is a short list of recommendations:
 
-Do not use [CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) instead of [SCSS varibales](https://css-tricks.com/difference-between-types-of-css-variables/)
+- Follow best practices from [SASS Guidelines](https://sass-guidelin.es/)
+- Do not use [CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) instead of [SCSS varibales](https://css-tricks.com/difference-between-types-of-css-variables/)
+- Feel free to use [SCSS Maps](https://sass-lang.com/documentation/values/maps/), [@at-root](https://sass-lang.com/documentation/at-rules/at-root/), [Placeholder Selectors](https://sass-lang.com/documentation/style-rules/placeholder-selectors/) etc.
 
-### Mixins
 
 ## Helpful Links
 
