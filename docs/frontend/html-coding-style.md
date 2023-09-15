@@ -147,6 +147,8 @@ Use semantic class/ID/attributes names, with kebab-case style. Don't use camelCa
 
 Always use quotes for attributes:
 
+✅ ***Good***
+
 ```HTML
 <table class="bordered">
 ```
