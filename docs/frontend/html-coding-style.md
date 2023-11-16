@@ -20,12 +20,16 @@ The following guidelines cover how to write HTML example code for frontend devel
   * [Boolean attributes](#boolean-attributes)
   * [Comments](#comments)
     * [Single-line Comments](#single-line-comments)
-    * [Multi-line Comments](#multi-line-comments)
+    * [Multi -line Attributes](#multi--line-attributes)
+    * [Multi -line Comments](#multi--line-comments)
   * [Sensitive Information](#sensitive-information)
   * [Best Practices](#best-practices)
   * [Helpful Links](#helpful-links)
-  
+
 <!-- TOC -->
+
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
+in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
 ## Common Information
 
@@ -33,28 +37,29 @@ A consistent, clean, and tidy HTML code makes it easier for others to read and u
 
 Here are some guidelines and tips for creating good HTML code:
 
-- Use HTML5 semantic tags [Semantic Elements](https://developer.mozilla.org/en-US/docs/Glossary/Semantics#semantic_elements)
-- Avoid an excessive [DOM size](https://developer.chrome.com/docs/lighthouse/performance/dom-size/?utm_source=lighthouse&utm_medium=lr)
-- Follow accessibility best practices [HTML and accessibility](https://developer.mozilla.org/en-US/docs/Learn/Accessibility/HTML)
-- HTML5 code should be valid. Check your code on [W3C Validator](https://validator.w3.org/)
+- When possible you SHOULD use HTML5 semantic tags [Semantic Elements](https://developer.mozilla.org/en-US/docs/Glossary/Semantics#semantic_elements)
+- HTML SHOULD avoid an excessive [DOM size](https://developer.chrome.com/docs/lighthouse/performance/dom-size/?utm_source=lighthouse&utm_medium=lr)
+- You SHOULD follow accessibility best practices [HTML and accessibility](https://developer.mozilla.org/en-US/docs/Learn/Accessibility/HTML)
+- HTML5 code MUST be valid. Check your code on [W3C Validator](https://validator.w3.org/)
 
 ## Formatting
 
-It is recommended to use Prettier as a code formatter to keep the code style consistent.
+It is RECOMMENDED to use Prettier as a code formatter to keep the code style consistent.
 
 [Here is an example](assets/.prettierrc.json) of our configuration file to learn about the current rules, and read the [Prettier documentation](https://prettier.io/docs/en/index.html).
 
 Prettier formats all the code and keeps the style consistent. Nevertheless, there are a few additional rules that you need to follow.
 
-Also, you can use [EditorConfig](https://editorconfig.org/) file for your Code Editor. Here is an example file of [.editorconfig](assets/.editorconfig).
+Also, you SHOULD use [EditorConfig](https://editorconfig.org/) file for your Code Editor.
+Here is an example file of [.editorconfig](assets/.editorconfig).
 
 ## Doctype
 
-You should use the [HTML5](https://dev.w3.org/html5/spec-LC/) doctype. It is short, easy to remember, and backwards compatible.
+You SHOULD use the [HTML5](https://dev.w3.org/html5/spec-LC/) doctype. It is short, easy to remember, and backwards compatible.
 
 ## Document characterset
 
-You should also define your document's characterset like so:
+You MUST define your document's characterset like so:
 
 ```HTML
 <meta charset="utf-8" />
@@ -72,7 +77,7 @@ Set the document language using the [lang](https://developer.mozilla.org/en-US/d
 
 ## Viewport Meta Tag
 
-You should include the following [<meta>](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta) viewport element in all your web pages:
+You SHOULD include the following [<meta>](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta) viewport element in all your web pages:
 
 ```HTML
 
@@ -90,7 +95,7 @@ You should include the following [<meta>](https://developer.mozilla.org/en-US/do
 
 Break lines at 80 characters except in the following cases:
 
-- The metadata tags at the top of files (such as page.metaDescription) have to be all on one line, so those lines can be as long as needed.
+- The metadata tags at the top of files (such as page.metaDescription) MUST be all on one line, so those lines can be as long as needed.
 - If a URL in a link has a line break, the link won't work. If a URL is longer than 80 characters (quite common), you're stuck with it. In that case, put the URL on its own line with the href attribute to make it easier to review the text before and after, as the following example shows:
 
 ```HTML
@@ -101,7 +106,8 @@ class="external">his biography.</a>
 
 ## Case
 
-Use lowercase for all element names and attribute names/values because it looks neater and means you can write markup faster. For example:
+All elements attribute names/values MUST be lowercase because it looks neater and means you can write markup faster.
+For example:
 
 ✅ ***Good***
 
@@ -113,22 +119,6 @@ Use lowercase for all element names and attribute names/values because it looks 
 
 ```HTML
 <P CLASS="WHOA-THERE">Why is my markup shouting?</P>
-```
-
-## Class and ID Names
-
-Use semantic class/ID/attributes names, with kebab-case style. Don't use camelCase or any other case. For example:
-
-✅ ***Good***
-
-```HTML
-<p class="editorial-summary">Blah blah blah</p>
-```
-
-❌ ***Bad***
-
-```HTML
-<p class="bigRedBox">Blah blah blah</p>
 ```
 
 ✅ ***Good***
@@ -143,9 +133,25 @@ Use semantic class/ID/attributes names, with kebab-case style. Don't use camelCa
 <a HREF="https://data-flair.training/">Welcome to DataFlair</a>
 ```
 
+## Class and ID Names
+
+Class/ID/attributes names SHOULD have semantic names, and MUST be in kebab-case style. For example:
+
+✅ ***Good***
+
+```HTML
+<p class="editorial-summary">Blah blah blah</p>
+```
+
+❌ ***Bad***
+
+```HTML
+<p class="bigRedBox">Blah blah blah</p>
+```
+
 ## Quote Attribute Values in HTML
 
-Always use quotes for attributes:
+You MUST use quotes for attributes:
 
 ✅ ***Good***
 
@@ -159,7 +165,7 @@ Always use quotes for attributes:
 <table class= bordered>
 ```
 
-Use double quotes for HTML, not single quotes, like so:
+You SHOULD use double quotes for HTML, not single quotes, like so:
 
 ✅ ***Good***
 
@@ -175,7 +181,7 @@ Use double quotes for HTML, not single quotes, like so:
 
 ## Spaces between equal signs in HTML
 
-Though it is allowed to use spaces within equal signs, it is highly recommended not to do so since it disrupts the readability of the code.
+Though it is allowed to use spaces within equal signs, it is highly RECOMMENDED not to do so since it disrupts the readability of the code.
 
 ✅ ***Good***
 
@@ -209,9 +215,15 @@ required="required"
 
 ### Single-line Comments
 
-Single-line comments must be on one line and text inside must be surrounded by spaces.
+Single-line comments MUST be on one line, and text inside MUST be surrounded by spaces.
 
-✅ ***Good***
+❌ ***Good***
+
+```HTML
+<!-- This is a comment -->
+```
+
+✅ ***Bad***
 
 ```HTML
 <!--
@@ -219,15 +231,49 @@ This is a comment
 -->
 ```
 
+### Multi-line Attributes
+
+It is RECOMMENDED using line-breaks for multiple attributes, keeping the first attribute on the tag's opening line.
+
+**Note:** Best practice is using Prettier for formatting HTML
+
+✅ ***Good***
+
+```HTML
+<div custom-attribute
+     class="something"
+     role="something-else"></div>
+```
+
+✅ ***Good***
+
+```HTML
+<input required custom-attribute>
+```
+
 ❌ ***Bad***
 
 ```HTML
-<!-- This is a comment -->
+<div
+        attr="1"
+>
+  Lorem Ipsum
+</div>
 ```
 
-### Multi-line Comments
+❌ ***Bad***
 
-Multi-line comments must start and end on their own line and text must not be indented.
+```HTML
+<div custom-attribute
+                class="something"
+     role="something-else">
+  Test
+    </div>
+```
+
+### Multi -line Comments
+
+Multi-line comments MUST start and end on their own line, and text MUST NOT be indented.
 
 
 ✅ ***Good***
@@ -249,14 +295,14 @@ that spans multiple lines
 
 ## Sensitive Information
 
-Sensitive information must not be placed in a comment.
+Sensitive information MUST NOT be placed in a comment.
 
 ❌ ***Bad***
 
 ```HTML
 <!-- Generated by some_php_function() -->
 ```
-Incorrect because comment reveals that markup comes from some_php_function().
+Incorrect because the comment reveals that markup comes from some_php_function().
 
 ## Best Practices
 
@@ -274,7 +320,7 @@ Valid HTML:
 <ul><p></p></ul>
 ```
 
-Use semantic tags:
+Semantic tags:
 
 
 ✅ ***Good***
@@ -289,7 +335,7 @@ Use semantic tags:
 <div class="click">View Options</div>
 ```
 
-It is better to use snake_case for name form field. But keep in mind that it depends on server requirements.
+It is RECOMMENDED to use snake_case for name form field. But keep in mind that it depends on server requirements.
 
 ✅ ***Good***
 
@@ -303,7 +349,7 @@ It is better to use snake_case for name form field. But keep in mind that it dep
 <input type="text" name="firstName">
 ```
 
-Do not close self-closing elements:
+Self-closing elements MUST NOT have a closed tag:
 
 ✅ ***Good***
 
