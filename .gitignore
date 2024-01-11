@@ -1,0 +1,13 @@
+# phpstorm/netbeans/eclipse/vscode project files
+.idea
+nbproject
+.buildpath
+.project
+.settings
+.vscode
+
+tsconfig.json
+
+# windows/Mac thumbnail cache
+Thumbs.db
+.DS_Store
