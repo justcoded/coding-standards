@@ -84,19 +84,19 @@ Please add comments above these lines with descriptions of what this playbook is
   become: true
 ```
 
-🔎 Why do this?
-
-This makes it quick to find out what the playbook does.
+>**🔎 Why do this?**
+>
+>This makes it quick to find out what the playbook does.
 Either with opening the file or just using the `head` command.
 
 ## The end of the file
 
 Always end the file with a line shift.
 
-🔎 Why do this?
-
-It's just Unix best practices.
-It avoids messing up your prompt when you `cat` a file.
+>**🔎 Why do this?**
+>
+>It's just Unix best practices.
+>It avoids messing up your prompt when you `cat` a file.
 
 ## Spaces and alignment
 
@@ -152,9 +152,10 @@ This is regardless of how many key/value pairs that exist in a map.
   ansible.builtin.service: name='{{ ntp_service }}' state=stopped enabled=false
   become: true
 ```
-🔎 Why do this?
-
-It's **soooo** much easier to read, and not more work to do. As the writer of this document is dyslectic, think of him and others in the same situation. In addition to the readability, it decreases the chance for a merge conflict.
+>**🔎 Why do this?**
+>
+>It's **soooo** much easier to read, and not more work to do.
+>As the writer of this document is dyslectic, think of him and others in the same situation In addition to the readability, it decreases the chance for a merge conflict.
 
 
 ### Whitespace and Comments
@@ -167,9 +168,9 @@ Air, one of the **most important thing** for humans and **for code**!
 It must be an empty line before `vars`, `pre_tasks`, `roles` and `tasks`, and before each task in the tasks definition.
 Tabulator stops must be set to two, `2`, spaces.
 
-🔎 Why do this?
-
-This creates a pretty and tidy code which is easy to read, both for dyslectic and non dyslectic people. There is no excuse not to do this.
+>**🔎 Why do this?**
+>
+>This creates a pretty and tidy code which is easy to read, both for dyslectic and non dyslectic people. There is no excuse not to do this.
 
 
 
@@ -214,9 +215,9 @@ Playbook definitions should follow this order.
         msg: "fee foo faa"
 ```
 
-🔎 Why do this?
-
-A common order makes playbooks consistent and easier to read for your dear colleagues. Think of them when you write.
+>**🔎 Why do this?**
+>
+>A common order makes playbooks consistent and easier to read for your dear colleagues. Think of them when you write.
 
 ## Order in task declaration
 
@@ -315,14 +316,16 @@ Make usage of variables inside a task name to create dynamic output messages.
   state: '{{ state }}'
   become: true
 ```
-🔎 Why do this?
-This will help to easily understand log outputs of playbooks.
+>**🔎 Why do this?**
+>
+>This will help to easily understand log outputs of playbooks.
 
 ### Omitting Unnecessary Information
 While name tasks in a playbook, do not include the name of the role which is currently executed, since Ansible will do this automatically.
 
-🔎 Why do this?
-Avoiding the same output twice on the console will prevent confusions.
+>**🔎 Why do this?**
+>
+>Avoiding the same output twice on the console will prevent confusions.
 
 ## Variable names
 
@@ -349,9 +352,9 @@ Avoiding the same output twice on the console will prevent confusions.
     A_STRING: bar
 ```
 
-🔎 Why do this?
-
-Ansible already uses `snake_case` for variables in it's examples. Consistent naming of variables keeps the code tidy and gives better readability.
+>**🔎 Why do this?**
+>
+>Ansible already uses `snake_case` for variables in it's examples. Consistent naming of variables keeps the code tidy and gives better readability.
 
 ### The prefix should contain the name of the role.
 
@@ -489,8 +492,9 @@ Before using the `command` or `shell` module, verify if there is already a modul
     - command: "yum install httpd"
 ```
 
-🔎 Why do this?
-While raw command could be seen as a security risk in general, another reason to avoid them is the loss of immutability of the ansible playbooks or roles. Ansible cannot verify if a command has been already executed before or not and will therefore execute it every time the playbook is running.
+>**🔎 Why do this?**
+>
+>While raw command could be seen as a security risk in general, another reason to avoid them is the loss of immutability of the ansible playbooks or roles. Ansible cannot verify if a command has been already executed before or not and will therefore execute it every time the playbook is running.
 
 ## 🔴 Spacing addons
 
@@ -827,7 +831,7 @@ pipelining=true
 
 Follow [Sample Ansible setup](https://docs.ansible.com/ansible/latest/tips_tricks/sample_setup.html) and use Ansible Lint, see [documentation](https://ansible.readthedocs.io/projects/lint/).
 
-🔎 Why do this?
-
-The guys and girls who created Ansible have a good understanding how playbooks work and where files should reside.
-You'll avoid a lot of your own ingenious pitfalls following their best practices.
+>**🔎 Why do this?**
+>
+>The guys and girls who created Ansible have a good understanding how playbooks work and where files should reside.
+>You'll avoid a lot of your own ingenious pitfalls following their best practices.
