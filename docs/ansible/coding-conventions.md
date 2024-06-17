@@ -1,40 +1,58 @@
 # Justcoded Ansible Coding Style and Conventions 
 
-## Index
-- [1. General conventions](#1-general-conventions)
-  * [Coding conventions]()
-    * [Best practices](#best-practices)
-    * [The beginning of a file](#the-beginning-of-a-file)
-    * [The end of a file](#the-end-of-the-file)
-    * [Always name tasks](#always-name-tasks)
-    * [Boolean variables](#boolean-variables)
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
+in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
+
+<!-- TOC -->
+* [Coding style](#coding-style)
+  * [Playbook File Extension](#playbook-file-extension)
+  * [So why doesn't my code look like Ansible examples?](#so-why-doesnt-my-code-look-like-ansible-examples)
+  * [The beginning of a file](#the-beginning-of-a-file)
+  * [The end of the file](#the-end-of-the-file)
+  * [Spaces and alignment](#spaces-and-alignment)
     * [Key/value pairs](#keyvalue-pairs)
-    * [Order in playbook](#order-in-playbook)
-    * [Order in task declaration](#order-in-task-declaration)
+    * [Whitespace and Comments](#whitespace-and-comments)
     * [Air and tabulators](#air-and-tabulators)
-    * [Variable names](#variable-names)
+  * [Order in playbook](#order-in-playbook)
+  * [Order in task declaration](#order-in-task-declaration)
+  * [Task names](#task-names)
+    * [Names](#names)
+    * [Always name tasks](#always-name-tasks)
+    * [Format for task names](#format-for-task-names)
+    * [Variables in Task Names](#variables-in-task-names)
+    * [Omitting Unnecessary Information](#omitting-unnecessary-information)
+  * [Variable names](#variable-names)
+    * [Always use `snake_case` for variable names.](#always-use-snakecase-for-variable-names)
+    * [The prefix should contain the name of the role.](#the-prefix-should-contain-the-name-of-the-role)
+    * [Define temporary variables using unique prefix](#define-temporary-variables-using-unique-prefix)
+    * [Define paths without trailing slash](#define-paths-without-trailing-slash)
+  * [Boolean variables](#boolean-variables)
+    * [Comparing](#comparing)
+  * [Use Modules instead of command or shell](#use-modules-instead-of-command-or-shell)
+  * [🔴 Spacing addons](#-spacing-addons)
+  * [Always Mention The State](#always-mention-the-state)
+  * [Use Block-Module](#use-block-module)
+  * [Use lists](#use-lists)
+* [Coding conventions](#coding-conventions)
   * [Content Organization](#content-organization)
   * [Directory Layout](#directory-layout)
   * [Alternative Directory Layout](#alternative-directory-layout)
   * [Group And Host Variables](#group-and-host-variables)
   * [Top Level Playbooks Are Separated By Role](#top-level-playbooks-are-separated-by-role)
-  * [Always Mention The State](#always-mention-the-state)
   * [Bundling Ansible Modules With Playbooks](#bundling-ansible-modules-with-playbooks)
-  * [Whitespace and Comments](#whitespace-and-comments)
+  * [Playbooks optimization](#playbooks-optimization)
+    * [Optimize Playbook Execution](#optimize-playbook-execution)
+    * [Use Module synchronize Instead of copy for Large Files](#use-module-synchronize-instead-of-copy-for-large-files)
+  * [Optimize SSH Connections](#optimize-ssh-connections)
+  * [Enabling Pipelining](#enabling-pipelining)
+* [Best practices](#best-practices)
+<!-- TOC -->
 
-## Best practices
+# Coding style
 
-Follow [Sample Ansible setup](https://docs.ansible.com/ansible/latest/tips_tricks/sample_setup.html) and use Ansible Lint, see [documentation](https://ansible.readthedocs.io/projects/lint/).
+## Playbook File Extension
 
-### Why do this?
-
-The guys and girls who created Ansible have a good understanding how playbooks work and where files should reside.
-You'll avoid a lot of your own ingenious pitfalls following their best practices.
-
-### So why doesn't my code look like Ansible examples?
-
-Examples in Ansible documentation are inconsistent.
-The main reason for this style guide is to have one consistent way of writing Ansible which is easy to read for you and others.
+All Ansible Yaml files should have a **.yml** extension (and NOT **.YML**, **.yaml** etc).
 
 ## The beginning of a file
 
@@ -42,8 +60,7 @@ Always start your file with the YAML heading which is `---`.
 
 Please add comments above these lines with descriptions of what this playbook is and an example of how to run it.
 
-
-
+✅ ***Good***
 ```yaml
 # This playbook playbook changes state of user foo
 # Example: ansible-playbook -e state=stopped playbook.yml
@@ -56,7 +73,6 @@ Please add comments above these lines with descriptions of what this playbook is
   become: true
 ```
 ❌ ***Bad***
-
 ```yaml
 - name: Change status of user foo
   ansible.builtin.service:
@@ -66,7 +82,7 @@ Please add comments above these lines with descriptions of what this playbook is
   become: true
 ```
 
-### Why do this ?
+#### Why do this ?
 
 This makes it quick to find out what the playbook does.
 Either with opening the file or just using the `head` command.
@@ -75,49 +91,14 @@ Either with opening the file or just using the `head` command.
 
 Always end the file with a line shift.
 
-### Why do this?
+#### Why do this ?
 
 It's just Unix best practices.
 It avoids messing up your prompt when you `cat` a file.
 
-## Always name tasks
+## Spaces and alignment
 
-It is possible to leave off the ‘name’ for a given task, though it is recommended to provide a description about why something is being done instead. This name is shown when the playbook is run.
-
-
-## Boolean variables
-
-Always use "false" and "true" values for boolean.
-
-✅ ***Good***
-```yaml
----
-- name: start chrony NTP daemon
-  ansible.builtin.service:
-    name: chrony
-    state: started
-    enabled: true
-  become: true
-```
-❌ ***Bad***
-
-```yaml
----
-- name: start chrony NTP daemon
-  ansible.builtin.service:
-    name: chrony
-    state: started
-    enabled: 1
-  become: yes
-```
- Why do this?
-
-Boolean variables may be expressed in a myriad of ways.
-`0/1`, `False/True`, `no/yes` and `false/true`.
-Even if you have a choice it's good to have a standard: `false/true`. There are a lot of scripting languages who have standardized on the `false/true` variant. Keep to it.
-
-
-## Key/value pairs
+### Key/value pairs
 
 Only use on space after colon when you define key value pair.
 
@@ -145,7 +126,8 @@ Only use on space after colon when you define key value pair.
   become : true
 ```
 
-Keep to only one standard. In our case **always use the "map" syntax**. This is regardless of how many key/value pairs that exist in a map.
+Keep to only one standard. In our case **always use the "map" syntax**.
+This is regardless of how many key/value pairs that exist in a map.
 
 ✅ ***Good***
 
@@ -168,137 +150,26 @@ Keep to only one standard. In our case **always use the "map" syntax**. This is 
   ansible.builtin.service: name='{{ ntp_service }}' state=stopped enabled=false
   become: true
 ```
- Why do this?
+#### Why do this ?
 
 It's **soooo** much easier to read, and not more work to do. As the writer of this document is dyslectic, think of him and others in the same situation. In addition to the readability, it decreases the chance for a merge conflict.
 
-## Variables in Task Names
 
-Include as much information as necessary to explain the purpose of a task.
-Make usage of variables inside a task name to create dynamic output messages.
+### Whitespace and Comments
 
-✅ ***Good***
+Generous use of whitespace to break things up, and use of comments (which start with ‘#’), is encouraged.
 
-```yaml
-- name: 'Change status of httpd to {{ state }}'
-  service:
-  enabled: true
-  name: 'httpd'
-  state: '{{ state }}'
-  become: true
-  Reason
-  This will help to easily understand log outputs of playbooks.
-```
+### Air and tabulators
 
-❌ ***Bad***
+Air, one of the **most important thing** for humans and **for code**!
+It must be an empty line before `vars`, `pre_tasks`, `roles` and `tasks`, and before each task in the tasks definition.
+Tabulator stops must be set to two, `2`, spaces.
 
-```yaml
-- name: 'Change status'
-  service:
-  enabled: true
-  name: 'httpd'
-  state: '{{ state }}'
-  become: true
-```
+#### Why do this ?
 
-## Omitting Unnecessary Information
-While name tasks in a playbook, do not include the name of the role which is currently executed, since Ansible will do this automatically.
-
-**Reason:**
-Avoiding the same output twice on the console will prevent confusions.
-
-## Names
-
-All the newly created Ansible roles should follow the name convention using dashes if necessary:
-`[company]-[action]-[function/technology]`
-
-✅ ***Good***
-
-```yaml
-# good
-mycompany-setup-lvm
-```
-
-❌ ***Bad***
-```yaml
-# bad
-lvm
-```
+This creates a pretty and tidy code which is easy to read, both for dyslectic and non dyslectic people. There is no excuse not to do this.
 
 
-## Use Modules instead of command or shell
-Before using the `command` or `shell` module, verify if there is already a module available which can avoid the usage of raw shell command.
-
-✅ ***Good***
-
-```yaml
-# good
-- name: install packages
-  tasks:
-    - name: 'install httpd'
-      yum:
-        name: 'httpd'
-        state: 'present'
-```
-
-❌ ***Bad***
-```yaml
-# bad
-- name: install httpd
-  tasks:
-    - command: "yum install httpd"
-```
-
-**Reason:** While raw command could be seen as a security risk in general, another reason to avoid them is the loss of immutability of the ansible playbooks or roles. Ansible cannot verify if a command has been already executed before or not and will therefore execute it every time the playbook is running.
-
-## 🔴 Spacing addons
-
-# Comparing
-Do not compare to literal True/False.
-✅ ***Good***
-
-```yaml
-when: var
-```
-```yaml
-when: not var
-```
-
-❌ ***Bad***
-```yaml
-when: var == True
-```
-```yaml
-when: var == Yes
-```
-```yaml
-when: var != ""
-```
-
-## Playbook File Extension
-
-All Ansible Yaml files should have a .yml extension (and NOT .YML, .yaml etc).
-
-##Vaults
-
-All Ansible Vault files should have a .vault extension (and NOT .yml, .YML, .yaml etc).
-
-## Use Module synchronize Instead of copy for Large Files
-
-## Use Block-Module
-
-Block can help to organize the code and can enable rollbacks.
-```yaml
-- block:
-    copy:
-      src: critical.conf
-      dest: /etc/critical/crit.conf
-    service:
-      name: critical
-      state: restarted
-  rescue:
-   command: shutdown -h now
-```
 
 ## Order in playbook
 
@@ -341,7 +212,7 @@ Playbook definitions should follow this order.
         msg: "fee foo faa"
 ```
 
- Why do this?
+#### Why do this ?
 
 A common order makes playbooks consistent and easier to read for your dear colleagues. Think of them when you write.
 
@@ -369,21 +240,91 @@ A task should be declared in this order.
 ---
 ```
 
-### Why do this?
+## Task names
 
-Reason is the same as "order of playbook". To make tasks more consistent and easier to read. Help your colleagues.
+### Names
 
-## Air and tabulators
+All the newly created Ansible roles should follow the name convention using dashes if necessary:
+`<vendor>-<action>-[function/technology]`
 
-Air, one of the **most important thing** for humans and **for code**! It must be an empty line before `vars`, `pre_tasks`, `roles` and `tasks`, and before each task in the tasks definition. Tabulator stops must be set to two, `2`, spaces.
+✅ ***Good***
 
-### Why do this?
+```yaml
+# good
+jc-setup-lvm
+```
 
-This creates a pretty and tidy code which is easy to read, both for dyslectic and non dyslectic people. There is no excuse not to do this.
+❌ ***Bad***
+```yaml
+# bad
+lvm
+```
+
+### Always name tasks
+
+It is possible to leave off the ‘name’ for a given task, though it is recommended to provide a description about why something is being done instead.
+This name is shown when the playbook is run.
+
+### Format for task names
+
+Always use the following format in task names:
+
+ `<task file name without extension> | <description>`
+
+✅ ***Good***
+
+```yaml
+- name: 'SwitchHttpdStatus | Change status of httpd to {{ state }}'
+```
+
+❌ ***Bad***
+
+```yaml
+- name: 'Change status of httpd to {{ state }}'
+```
+
+#### Why do this?
+
+It will always be clear what task was performed when analyzing the log.
+
+### Variables in Task Names
+
+Include as much information as necessary to explain the purpose of a task.
+Make usage of variables inside a task name to create dynamic output messages.
+
+✅ ***Good***
+
+```yaml
+- name: 'Change status of httpd to {{ state }}'
+  service:
+  enabled: true
+  name: 'httpd'
+  state: '{{ state }}'
+  become: true
+```
+
+❌ ***Bad***
+
+```yaml
+- name: 'Change status'
+  service:
+  enabled: true
+  name: 'httpd'
+  state: '{{ state }}'
+  become: true
+```
+#### Why do this ?
+This will help to easily understand log outputs of playbooks.
+
+### Omitting Unnecessary Information
+While name tasks in a playbook, do not include the name of the role which is currently executed, since Ansible will do this automatically.
+
+#### Why do this ?
+Avoiding the same output twice on the console will prevent confusions.
 
 ## Variable names
 
-Always use `snake_case` for variable names.
+### Always use `snake_case` for variable names.
 
 ✅ ***Good***
 
@@ -405,9 +346,244 @@ Always use `snake_case` for variable names.
     anint: 101
     A_STRING: bar
 ```
- Why do this?
+
+#### Why do this ?
 
 Ansible already uses `snake_case` for variables in it's examples. Consistent naming of variables keeps the code tidy and gives better readability.
+
+### The prefix should contain the name of the role.
+
+✅ ***Good***
+
+```yaml
+---
+- name: 'set some facts'
+  set_fact:
+    rolename_my_boolean: true
+    rolename_my_int: 20
+    rolename_my_string: 'test'
+```
+
+❌ ***Bad***
+
+```yaml
+---
+- name: 'set some facts'
+  set_fact:
+    myBoolean: true
+    int: 20
+    MY_STRING: 'test'
+```
+
+### Define temporary variables using unique prefix
+
+Registered variables and facts set using set_fact module are often defined for temporary usage.
+In order to avoid variable collision and make it clear to the reader that these variables are only for temporary usage,
+it is good practice to use a unique prefix.
+You could use r_ for registered variables and f_ for facts.
+
+```yaml
+- name: Collect information from external system
+  uri:
+    url: http://www.example.com
+    return_content: yes
+  register: r_results
+  failed_when: "'AWESOME' not in r_results.content"
+
+- name: Set some facts for temporary usage
+  set_fact:
+    f_username: "{{ r_results.username }}"
+```
+
+### Define paths without trailing slash
+
+Variables that define paths should never have a trailing slash.
+Also when concatenating paths, follow the same convention.
+
+✅ ***Good***
+
+```yaml
+app_root: /foo
+app_bar: "{{ app_root }}/bar"
+```
+
+❌ ***Bad***
+
+```yaml
+app_root: /foo/
+app_bar: "{{ app_root }}bar"
+```
+
+## Boolean variables
+
+Always use **false** and **true** values for boolean.
+
+✅ ***Good***
+```yaml
+---
+- name: start chrony NTP daemon
+  ansible.builtin.service:
+    name: chrony
+    state: started
+    enabled: true
+  become: true
+```
+❌ ***Bad***
+
+```yaml
+---
+- name: start chrony NTP daemon
+  ansible.builtin.service:
+    name: chrony
+    state: started
+    enabled: 1
+  become: yes
+```
+
+### Comparing
+Do not compare to literal True/False.
+
+✅ ***Good***
+
+```yaml
+when: var
+```
+```yaml
+when: not var
+```
+
+❌ ***Bad***
+```yaml
+when: var == True
+```
+```yaml
+when: var == Yes
+```
+```yaml
+when: var != ""
+```
+
+
+## Use Modules instead of command or shell
+Before using the `command` or `shell` module, verify if there is already a module available which can avoid the usage of raw shell command.
+
+✅ ***Good***
+
+```yaml
+# good
+- name: install packages
+  tasks:
+    - name: 'install httpd'
+      yum:
+        name: 'httpd'
+        state: 'present'
+```
+
+❌ ***Bad***
+```yaml
+# bad
+- name: install httpd
+  tasks:
+    - command: "yum install httpd"
+```
+
+#### Why do this ?
+While raw command could be seen as a security risk in general, another reason to avoid them is the loss of immutability of the ansible playbooks or roles. Ansible cannot verify if a command has been already executed before or not and will therefore execute it every time the playbook is running.
+
+## 🔴 Spacing addons
+
+## Always Mention The State
+
+The ‘state’ parameter is optional to a lot of modules.
+Whether ‘state=present’ or ‘state=absent’, it’s always best to leave that parameter in your playbooks to make it clear, especially as some modules support additional states.
+
+## Use Block-Module
+
+Block can help to organize the code and can enable rollbacks.
+```yaml
+- block:
+    copy:
+      src: critical.conf
+      dest: /etc/critical/crit.conf
+    service:
+      name: critical
+      state: restarted
+  rescue:
+   command: shutdown -h now
+```
+
+Also blocks allow for logical grouping of tasks and in play error handling.
+Most of what you can apply to a single task (with the exception of loops) can be applied at the block level,
+which also makes it much easier to set data or directives common to the tasks. This does not mean the directive affects the block itself,
+but is inherited by the tasks enclosed by a block.
+i.e. a when will be applied to the tasks, not the block itself.
+
+```yaml
+tasks:
+   - name: Install, configure, and start Apache
+     block:
+       - name: install httpd and memcached
+         yum:
+           name:
+           - httpd
+           - memcached
+           state: present
+
+       - name: apply the foo config template
+         template:
+           src: templates/src.j2
+           dest: /etc/foo.conf
+       - name: start service bar and enable it
+         service:
+           name: bar
+           state: started
+           enabled: True
+     when: ansible_facts['distribution'] == 'CentOS'
+     become: true
+     become_user: root
+     ignore_errors: yes
+```
+## Use lists
+Use lists when ever a modules support it (i.e. yum):
+
+
+✅ ***Good***
+```yaml
+tasks:
+- name: Ensure the packages are installed
+  yum:
+  state: present
+  name:
+  - httpd
+  - mod_ssl
+  - httpd-tools
+  - mariadb-server
+  - mariadb
+  - php
+  - php-mysqlnd
+```
+
+***Bad***
+```yaml
+tasks:
+ - name: Ensure the packages are installed
+   yum:
+     name: "{{ item }}"
+     state: present
+   loop:
+     - httpd
+     - mod_ssl
+     - httpd-tools
+     - mariadb-server
+     - mariadb
+     - php
+     - php-mysqlnd
+```
+# Coding conventions
+
+## Vaults
+
+All Ansible Vault files should have a **.vault** extension (and NOT **.yml**, **.YML**, **.yaml** etc).
 
 ## Content Organization
 
@@ -415,95 +591,28 @@ Your usage of Ansible should fit your needs, however, not ours, so feel free to 
 
 Always try to use Ansible’s “roles” to organize your playbook content  organization feature.
 
+
+
 ## Directory Layout
 
-The top level of the directory would contain files and directories like so:
+The top level of the directory should contain files and directories like so:
+This is the required preset for recognizing playbooks, tasks and variables by [OrchidE plugin](https://www.orchide.dev/pages/dokumentation).  
 
 ```text
-production                # inventory file for production servers
-staging                   # inventory file for staging environment
-
-group_vars/
-  group1.yml              # here we assign variables to particular groups
-  group2.yml
-host_vars/
-  hostname1.yml           # here we assign variables to particular systems
-  hostname2.yml
-
-library/                  # if any custom modules, put them here (optional)
-  module_utils/           # if any custom module_utils to support modules, put them here (optional)
-  filter_plugins/         # if any custom filter plugins, put them here (optional)
-
-site.yml                  # master playbook
-webservers.yml            # playbook for webserver tier
-dbservers.yml             # playbook for dbserver tier
-
-  roles/
-    common/               # this hierarchy represents a "role"
-      tasks/              #
-        main.yml          #  <-- tasks file can include smaller files if warranted
-      handlers/           #
-        main.yml          #  <-- handlers file
-      templates/          #  <-- files for use with the template resource
-        ntp.conf.j2       #  <------- templates end in .j2
-      files/              #
-        bar.txt           #  <-- files for use with the copy resource
-        foo.sh            #  <-- script files for use with the script resource
-      vars/               #
-        main.yml          #  <-- variables associated with this role
-      defaults/           #
-        main.yml          #  <-- default lower priority variables for this role
-      meta/               #
-        main.yml          #  <-- role dependencies
-      library/            # roles can also include custom modules
-      module_utils/       # roles can also include custom module_utils
-      lookup_plugins/     # or other types of plugins, like lookup in this case
-
-    webtier/              # same kind of structure as "common" was above, done for the webtier role
-    monitoring/           # ""
-    fooapp/               # ""
+  project
+  |-- inventory
+  |   |-- hosts
+  |   |-- group_vars
+  |   |   |-- webservers
+  |   |   |   |-- default.yml
+  |-- playbooks
+  |   |-- webservers
+  |   |   -- main.yml  
+  |-- roles
+  |   |-- webserver
+  |   |   |-- tasks
+  |   |   |   |-- main.yml
 ```
-
-## Alternative Directory Layout
-
-Alternatively you can put each inventory file with its group_vars/host_vars in a separate directory. This is particularly useful if your group_vars/host_vars don’t have that much in common in different environments. The layout could look something like this:
-
-```text
-inventories/
-   production/
-      hosts               # inventory file for production servers
-      group_vars/
-         group1.yml       # here we assign variables to particular groups
-         group2.yml
-      host_vars/
-         hostname1.yml    # here we assign variables to particular systems
-         hostname2.yml
-
-   staging/
-      hosts               # inventory file for staging environment
-      group_vars/
-         group1.yml       # here we assign variables to particular groups
-         group2.yml
-      host_vars/
-         stagehost1.yml   # here we assign variables to particular systems
-         stagehost2.yml
-
-library/
-module_utils/
-filter_plugins/
-
-site.yml
-webservers.yml
-dbservers.yml
-
-roles/
-    common/
-    webtier/
-    monitoring/
-    fooapp/
-```
-
-This layout gives you more flexibility for larger environments, as well as a total separation of inventory variables between different environments. The downside is that it is harder to maintain, because there are more files.
 
 ## Group And Host Variables
 
@@ -578,10 +687,6 @@ ansible-playbook site.yml --limit webservers
 ansible-playbook webservers.yml
 ```
 
-## Always Mention The State
-
-The ‘state’ parameter is optional to a lot of modules.
-Whether ‘state=present’ or ‘state=absent’, it’s always best to leave that parameter in your playbooks to make it clear, especially as some modules support additional states.
 
 ## Bundling Ansible Modules With Playbooks
 
@@ -589,11 +694,12 @@ If a playbook has a ./library directory relative to its YAML file, this director
 This is a great way to keep modules that go with a playbook together.
 This is shown in the directory structure example at the start of this section.
 
-## Whitespace and Comments
+## Playbooks optimization
 
-Generous use of whitespace to break things up, and use of comments (which start with ‘#’), is encouraged.
+### Import vs Include
 
-## Optimize Playbook Execution
+
+### Optimize Playbook Execution
 Disable facts gathering if it is not required.
 
 Try not to use: ansible_facts[‘hostname’] (or ‘nodename’)
@@ -612,44 +718,39 @@ Use “forks” (default is 5) to control how many connections can be active (lo
 
 While testing forks analize Enable CPU and Memory Profiling
 
-If you use the module "copy" for large files: do not use “copy” module. Use “synchronize” module instead (based on rsync)
+### Use Module synchronize Instead of copy for Large Files
 
-Use lists when ever a modules support it (i.e. yum):
-
+If you use the module "copy" for large files: do not use “copy” module.
+Use “synchronize” module instead (based on rsync)
 
 ✅ ***Good***
+
 ```yaml
-tasks:
-- name: Ensure the packages are installed
-  yum:
-  state: present
-  name:
-  - httpd
-  - mod_ssl
-  - httpd-tools
-  - mariadb-server
-  - mariadb
-  - php
-  - php-mysqlnd
+- hosts: test_01
+
+  tasks:
+    - name: "copy big file"
+
+    - package:
+        name: rsync
+
+    - synchronize:
+        src: /tmp/bigfile.tar.gz
+        dest: /tmp/test
 ```
 
-***Bad***
+❌ ***Bad***
 ```yaml
-tasks:
- - name: Ensure the packages are installed
-   yum:
-     name: "{{ item }}"
-     state: present
-   loop:
-     - httpd
-     - mod_ssl
-     - httpd-tools
-     - mariadb-server
-     - mariadb
-     - php
-     - php-mysqlnd
-```
+- hosts: test_01
 
+  tasks:
+    - name: "copy big file"
+
+    - copy:
+        src: /tmp/bigfile.tar.gz
+        dest: /tmp/test
+
+```
 ## Optimize SSH Connections
 
 in `ansible.cfg` set
@@ -667,3 +768,11 @@ reduces number of SSH operations
 
 requires to disable `requiretty` in sudo options
 
+## Best practices
+
+Follow [Sample Ansible setup](https://docs.ansible.com/ansible/latest/tips_tricks/sample_setup.html) and use Ansible Lint, see [documentation](https://ansible.readthedocs.io/projects/lint/).
+
+#### Why do this ?
+
+The guys and girls who created Ansible have a good understanding how playbooks work and where files should reside.
+You'll avoid a lot of your own ingenious pitfalls following their best practices.
