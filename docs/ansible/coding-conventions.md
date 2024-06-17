@@ -41,10 +41,12 @@ in this document are to be interpreted as described in [RFC 2119](https://datatr
   * [Top Level Playbooks Are Separated By Role](#top-level-playbooks-are-separated-by-role)
   * [Bundling Ansible Modules With Playbooks](#bundling-ansible-modules-with-playbooks)
   * [Playbooks optimization](#playbooks-optimization)
+    * [Import vs Include](#import-vs-include)
     * [Optimize Playbook Execution](#optimize-playbook-execution)
     * [Use Module synchronize Instead of copy for Large Files](#use-module-synchronize-instead-of-copy-for-large-files)
-  * [Optimize SSH Connections](#optimize-ssh-connections)
-  * [Enabling Pipelining](#enabling-pipelining)
+  * [Configuration conventions](#configuration-conventions)
+    * [Optimize SSH Connections](#optimize-ssh-connections)
+    * [Enabling Pipelining](#enabling-pipelining)
 * [Best practices](#best-practices)
 <!-- TOC -->
 
@@ -698,6 +700,44 @@ This is shown in the directory structure example at the start of this section.
 
 ### Import vs Include
 
+Alway try to break up playbooks into smaller logically separated parts.
+
+Includes and imports allow users to do this, which can be used across multiple parent playbooks or even multiple times within the same Playbook.
+A major difference between `import` and `include` tasks:
+
+- `import` tasks will be parsed at the beginning when you run your playbook
+(If you use any `import*` Task (`import_playbook`, `import_tasks`, etc.), it will be static.)
+- `include` tasks will be parsed at the moment Ansible hits them
+(If you use any **include*** Task (**include_tasks**, **include_role**, etc.), it will be dynamic.)
+
+  
+**Warning:** The bare `include` task (which was used for both Task files and Playbook-level includes) is still available, however it is now considered deprecated.
+
+#### Tradeoffs and Pitfalls Between Includes and Imports
+* Using `include*` vs. `import*` has some advantages as well as some tradeoffs which users should consider when choosing to use each:
+
+* The primary advantage of using `include*` statements is looping. When a loop is used with an include, the included tasks or role will be executed once for each item in the loop.
+
+* Using `include*` does have some limitations when compared to `import*` statements:
+
+* Tags which only exist inside a dynamic include will not show up in `--list-tags` output.
+
+* Tasks which only exist inside a dynamic include will not show up in `--list-tasks` output.
+
+* You cannot use `notify` to trigger a handler name which comes from inside a dynamic include (see note below).
+
+* You cannot use `--start-at-task` to begin execution at a task inside a dynamic include.
+
+* Using `import*` can also have some limitations when compared to dynamic includes:
+
+* As noted above, loops cannot be used with imports at all.
+
+* When using variables for the target file or role name, variables from inventory sources (**host**/**group** vars, etc.) cannot be used.
+
+* Handlers using **import*** will not be triggered when notified by their name, as importing overwrites the handler’s named task with the imported task list.
+
+**Note:** Regarding the use of `notify` for dynamic tasks:
+it is still possible to trigger the dynamic include itself, which would result in all tasks within the include being run.
 
 ### Optimize Playbook Execution
 Disable facts gathering if it is not required.
@@ -720,7 +760,7 @@ While testing forks analize Enable CPU and Memory Profiling
 
 ### Use Module synchronize Instead of copy for Large Files
 
-If you use the module "copy" for large files: do not use “copy” module.
+If you use the module `copy` for large files: do not use `copy` module.
 Use “synchronize” module instead (based on rsync)
 
 ✅ ***Good***
@@ -751,7 +791,10 @@ Use “synchronize” module instead (based on rsync)
         dest: /tmp/test
 
 ```
-## Optimize SSH Connections
+
+## Configuration conventions
+
+### Optimize SSH Connections
 
 in `ansible.cfg` set
 
@@ -759,14 +802,26 @@ in `ansible.cfg` set
 * ControlPersist
 * PreferredAuthentications
 
-
-## Enabling Pipelining
+```text
+[ssh_connection]
+...
+ssh_args=-C -o ControlMaster=auto -o ControlPersist=1200s -o BatchMode=yes -o PreferredAuthentications=gssapi-with-mic,gssapi-keyex,hostbased,publickey
+...
+```
+### Enabling Pipelining
 
 ! **Not enabled by default**
 
 reduces number of SSH operations
 
-requires to disable `requiretty` in sudo options
+```text
+[ssh_connection]
+...
+pipelining=true
+...
+```
+
+**Info:** this requires to disable `requiretty` in sudo options
 
 ## Best practices
 
