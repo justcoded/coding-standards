@@ -4,6 +4,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
 <!-- TOC -->
+* [Justcoded Ansible Coding Style and Conventions](#justcoded-ansible-coding-style-and-conventions-)
 * [Coding style](#coding-style)
   * [Playbook File Extension](#playbook-file-extension)
   * [The beginning of a file](#the-beginning-of-a-file)
@@ -18,7 +19,6 @@ in this document are to be interpreted as described in [RFC 2119](https://datatr
     * [Names](#names)
     * [Always name tasks](#always-name-tasks)
     * [Format for task names](#format-for-task-names)
-      * [Why do this?](#why-do-this)
     * [Variables in Task Names](#variables-in-task-names)
     * [Omitting Unnecessary Information](#omitting-unnecessary-information)
   * [Variable names](#variable-names)
@@ -287,9 +287,9 @@ Always use the following format in task names:
 - name: 'Change status of httpd to {{ state }}'
 ```
 
-#### Why do this?
-
-It will always be clear what task was performed when analyzing the log.
+>**🔎 Why do this?**
+>
+>It will always be clear what task was performed when analyzing the log.
 
 ### Variables in Task Names
 
