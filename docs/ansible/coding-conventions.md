@@ -171,10 +171,14 @@ Generous use of whitespace to break things up, and use of comments (which start 
 
 ### Air and tabulators
 
-* Air, one of the **most important thing** for humans and **for code**!
-* It must be an empty line before `vars`, `pre_tasks`, `roles` and `tasks`,
-* and before each task in the tasks definition.
-* Tabulator stops must be set to two, `2`, spaces.
+:memo: Tabulator stops must be set to two, `2`, spaces.
+
+:memo: Air, one of the **most important thing** for humans and **for code**! 
+
+It must be an empty line:
+* before `vars`, `pre_tasks`, `roles` and `tasks`,
+* before each task in the tasks definition.
+
 
 ✅ ***Good***
 
@@ -900,92 +904,6 @@ This is the required preset for recognizing playbooks, tasks and variables by [O
 ```
 
 Take care, that file structure for some roles can be completely generated with ansible galaxy.
-
-### Group And Host Variables
-
-Groups are nice for organization, but that’s not all groups are good for.
-You can also assign variables to them! For instance, atlanta has its own NTP servers, so when setting up ntp.conf, we should use them.
-Let’s set those now:
-
-✅ ***Good***
-
-```yaml
----
-# file: group_vars/atlanta
-ntp: ntp-atlanta.example.com
-backup: backup-atlanta.example.com
-```
-
-Variables aren’t just for geographic information either! Maybe the webservers have some configuration that doesn’t make sense for the database servers:
-
-✅ ***Good***
-
-```yaml
----
-# file: group_vars/webservers
-apacheMaxRequestsPerChild: 3000
-apacheMaxClients: 900
-```
-
-If we had any default values, or values that were universally true, we would put them in a file called group_vars/all:
-
-✅ ***Good***
-
-```yaml
----
-# file: group_vars/all
-ntp: ntp-boston.example.com
-backup: backup-boston.example.com
-```
-
-We can define specific hardware variance in systems in a host_vars file, but avoid doing this unless you need to:
-
-✅ ***Good***
-
-```yaml
----
-# file: host_vars/db-bos-1.example.com
-foo_agent_port: 86
-bar_agent_port: 99
-```
-
-Again, if we are using dynamic inventory sources, many dynamic groups are automatically created.
-So a tag like “class:webserver” would load in variables from the file “group_vars/ec2_tag_class_webserver” automatically.
-
-### Top Level Playbooks Are Separated By Role
-
-In site.yml, we import a playbook that defines our entire infrastructure. This is a very short example, because it’s just importing some other playbooks:
-
-✅ ***Good***
-
-```yaml
----
-# file: site.yml
-- import_playbook: webservers.yml
-- import_playbook: dbservers.yml
-```
-
-In a file like webservers.yml (also at the top level), we map the configuration of the webservers group to the roles performed by the webservers group:
-
-✅ ***Good***
-
-```yaml
----
-# file: webservers.yml
-- hosts: webservers
-  roles:
-    - common
-    - webtier
-```
-
-The idea here is that we can choose to configure our whole infrastructure by “running” site.yml or we could just choose to run a subset by running webservers.yml.
-This is analogous to the “–limit” parameter to ansible but a little more explicit:
-
-```yaml
-ansible-playbook site.yml --limit webservers
-ansible-playbook webservers.yml
-```
-
 
 ### Bundling Ansible Modules With Playbooks
 
