@@ -24,6 +24,7 @@ in this document are to be interpreted as described in [RFC 2119](https://datatr
   * [Variable names](#variable-names)
     * [Always use `snake_case` for variable names.](#always-use-snakecase-for-variable-names)
     * [The prefix should contain the name of the role.](#the-prefix-should-contain-the-name-of-the-role)
+    * [Variable precedence](#variable-precedence)
     * [Define temporary variables using unique prefix](#define-temporary-variables-using-unique-prefix)
     * [Define paths without trailing slash](#define-paths-without-trailing-slash)
   * [Boolean variables](#boolean-variables)
@@ -36,10 +37,10 @@ in this document are to be interpreted as described in [RFC 2119](https://datatr
 * [Coding conventions](#coding-conventions)
   * [Vaults](#vaults)
   * [Content Organization](#content-organization)
-  * [Directory Layout](#directory-layout)
-  * [Group And Host Variables](#group-and-host-variables)
-  * [Top Level Playbooks Are Separated By Role](#top-level-playbooks-are-separated-by-role)
-  * [Bundling Ansible Modules With Playbooks](#bundling-ansible-modules-with-playbooks)
+    * [Directory Layout](#directory-layout)
+    * [Group And Host Variables](#group-and-host-variables)
+    * [Top Level Playbooks Are Separated By Role](#top-level-playbooks-are-separated-by-role)
+    * [Bundling Ansible Modules With Playbooks](#bundling-ansible-modules-with-playbooks)
   * [Playbooks optimization](#playbooks-optimization)
     * [Import vs Include](#import-vs-include)
       * [Tradeoffs and Pitfalls Between Includes and Imports](#tradeoffs-and-pitfalls-between-includes-and-imports)
@@ -48,10 +49,16 @@ in this document are to be interpreted as described in [RFC 2119](https://datatr
   * [Configuration conventions](#configuration-conventions)
     * [Optimize SSH Connections](#optimize-ssh-connections)
     * [Enabling Pipelining](#enabling-pipelining)
-  * [Best practices](#best-practices)
 <!-- TOC -->
 
 # Coding style
+
+The main reason for this style guide is to have one consistent way of writing Ansible which is easy to read for you and others.
+
+First of all, follow [Sample Ansible setup](https://docs.ansible.com/ansible/latest/tips_tricks/sample_setup.html) and use Ansible Lint ...
+
+Use IDE plugins for autocomplete and validation, the best one is OrchidE (https://www.orchide.dev/)
+
 
 ## Playbook File Extension
 
@@ -165,9 +172,213 @@ Generous use of whitespace to break things up, and use of comments (which start 
 
 ### Air and tabulators
 
-Air, one of the **most important thing** for humans and **for code**!
-It must be an empty line before `vars`, `pre_tasks`, `roles` and `tasks`, and before each task in the tasks definition.
-Tabulator stops must be set to two, `2`, spaces.
+* Air, one of the **most important thing** for humans and **for code**!
+* It must be an empty line before `vars`, `pre_tasks`, `roles` and `tasks`,
+* and before each task in the tasks definition.
+* Tabulator stops must be set to two, `2`, spaces.
+
+✅ ***Good***
+
+```yaml
+---
+- name: Install and Launch the Simple NodeJS Application
+  hosts: testserver
+
+  vars_files:
+    - gitsecrets.yml
+
+  vars:
+    - destdir: /apps/sampleapp
+
+  pre_tasks:
+    - name : install dependencies before starting
+      become: yes
+      register: aptinstall
+      apt:
+        name:
+          - nodejs
+          - npm
+          - git
+        state: latest
+        update_cache: yes
+
+    - name : validate the nodejs installation
+      debug: msg="Installation of node is Successfull"
+      when: aptinstall is changed
+
+  tasks:
+    - name: Version of Node and NPM
+      shell:
+        "npm -v && nodejs -v"
+      register: versioninfo
+    - name: Validate if the installation is intact
+      assert:
+        that: "versioninfo is changed"
+
+    - name: Create Dest Directory if not exists
+      become: yes
+      file:
+        path: "{{ destdir }}"
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: 0755
+        
+    - name: Download the NodeJS code from the GitRepo
+      become: yes
+      git:
+        repo: 'https://{{gittoken}}@github.com/AKSarav/SampleNodeApp.git'
+        dest: "{{ destdir }}"
+        
+    - name: Change the ownership of the directory
+      become: yes
+      file:
+        path: "{{destdir}}"
+        owner: "vagrant"
+      register: chgrpout
+      
+    - name: Install Dependencies with NPM install command
+      shell:
+        "npm install"
+      args:
+        chdir: "{{ destdir }}"
+      register: npminstlout
+    - name: Debug npm install command
+      debug: msg='{{npminstlout.stdout_lines}}'
+    - name: Start the App
+      async: 10
+      poll: 0
+      shell:
+        "(node index.js > nodesrv.log 2>&1 &)"
+      args:
+        chdir: "{{ destdir }}"
+      register: appstart
+
+    - name: Validating the port is open
+      tags: nodevalidate
+      wait_for:
+        host: "localhost"
+        port: 5000
+        delay: 10
+        timeout: 30
+        state: started
+        msg: "NodeJS server is not running"
+        
+  post_tasks:
+    - name: notify Slack that the servers have been updated
+      tags: slack
+      community.general.slack:
+        token: T026******PF/B02U*****N/WOa7r**********Ao0jnWn
+        msg: |
+          ### StatusUpdate ###
+          – ------------------------------------
+          ``
+          `Server`: {{ansible_host}}
+          `Status`: NodeJS Sample Application installed successfully
+          – ------------------------------------
+        channel: '#ansible'
+        color: good
+        username: 'Ansible on {{ inventory_hostname }}'
+        link_names: 0
+        parse: 'none'
+      delegate_to: localhost
+```
+
+❌ ***Bad***
+
+```yaml
+---
+- name: Install and Launch the Simple NodeJS Application
+  hosts: testserver
+  vars_files:
+     - gitsecrets.yml
+  vars:
+     - destdir: /apps/sampleapp
+  pre_tasks:
+     - name : install dependencies before starting
+        become: yes
+        register: aptinstall
+        apt:
+          name:
+             - nodejs
+             - npm
+             - git
+          state: latest
+          update_cache: yes
+     - name : validate the nodejs installation
+        debug: msg="Installation of node is Successfull"
+        when: aptinstall is changed
+  tasks:
+     - name: Version of Node and NPM
+        shell:
+          "npm -v && nodejs -v"
+        register: versioninfo
+     - name: Validate if the installation is intact
+        assert:
+          that: "versioninfo is changed"
+     - name: Create Dest Directory if not exists
+        become: yes
+        file:
+          path: "{{ destdir }}"
+          state: directory
+          owner: vagrant
+          group: vagrant
+          mode: 0755
+     - name: Download the NodeJS code from the GitRepo
+        become: yes
+        git:
+          repo: 'https://{{gittoken}}@github.com/AKSarav/SampleNodeApp.git'
+          dest: "{{ destdir }}"
+     - name: Change the ownership of the directory
+        become: yes
+        file:
+          path: "{{destdir}}"
+          owner: "vagrant"
+        register: chgrpout
+     - name: Install Dependencies with NPM install command
+        shell:
+          "npm install"
+        args:
+          chdir: "{{ destdir }}"
+        register: npminstlout
+     - name: Debug npm install command
+        debug: msg='{{npminstlout.stdout_lines}}'
+     - name: Start the App
+        async: 10
+        poll: 0
+        shell:
+          "(node index.js > nodesrv.log 2>&1 &)"
+        args:
+          chdir: "{{ destdir }}"
+        register: appstart
+     - name: Validating the port is open
+        tags: nodevalidate
+        wait_for:
+          host: "localhost"
+          port: 5000
+          delay: 10
+          timeout: 30
+          state: started
+          msg: "NodeJS server is not running"
+  post_tasks:
+     - name: notify Slack that the servers have been updated
+        tags: slack
+        community.general.slack:
+          token: T026******PF/B02U*****N/WOa7r**********Ao0jnWn
+          msg: |
+             ### StatusUpdate ###
+             – ------------------------------------
+             ``
+             `Server`: {{ansible_host}}
+             `Status`: NodeJS Sample Application installed successfully
+             – ------------------------------------
+          channel: '#ansible'
+          color: good
+          username: 'Ansible on {{ inventory_hostname }}'
+          link_names: 0
+          parse: 'none'
+        delegate_to: localhost
+```
 
 >**🔎 Why do this?**
 >
@@ -188,6 +399,7 @@ Playbook definitions should follow this order.
 * `roles`
 * `tasks`
 
+✅ ***Good***
 ```yaml
 ---
 - name: update root authorized_keys for all machines
@@ -226,15 +438,26 @@ A task should be declared in this order.
 
 * `name`
 * module and the arguments for the module
-* arguments for the task in alphabetic order
+* arguments for the task in correct order
 * `tags` at the bottom
 
+✅ ***Good***
 ```yaml
 ---
 - name: unhold packages
   ansible.builtin.shell: 'apt-mark -s unhold {{ item }} && apt-mark unhold {{ item }}'
   args:
+    #chdir:      # change dir before execution
+    #cmd:        # The command to run followed by optional arguments.
+    #creates:    # A filename, when it already exists, this step will not be run.
     executable: /bin/bash
+    #free_form:  # The shell module takes a free form command to run, as a string.
+                 # There is no actual parameter named ‘free form’.
+                 # See the documentation on how to use.
+    #removes:    # A filename, when it does not exist, this step will not be run.
+    #stdin:      # Set the stdin of the command directly to the specified value.
+    #stdin_add_newline: 
+                # Whether to append a newline to stdin data. (true / false)
   changed_when: apt_mark_unhold.rc == 0 and "already" not in apt_mark_unhold.stdout
   failed_when: false
   loop: '{{ packages_ubuntu_unhold }}'
@@ -254,13 +477,11 @@ All the newly created Ansible roles should follow the name convention using dash
 ✅ ***Good***
 
 ```yaml
-# good
 jc-setup-lvm
 ```
 
 ❌ ***Bad***
 ```yaml
-# bad
 lvm
 ```
 
@@ -381,12 +602,38 @@ While name tasks in a playbook, do not include the name of the role which is cur
     MY_STRING: 'test'
 ```
 
+### Variable precedence
+
+Follow this [guide](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#understanding-variable-precedence) when defining the variable scope.
+
+You should set defaults in roles to avoid undefined-variable errors.
+
+✅ ***Good***
+```yaml
+---
+# file: roles/x/defaults/main.yml
+# if no other value is supplied in inventory or as a parameter, this value will be used
+http_port: 80
+```
+
+Then override those values at the required level or at the command line.
+
+✅ ***Good***
+```yaml
+---
+# file: roles/x/vars/main.yml
+# this will absolutely be used in this role
+http_port: 8080
+```
+
 ### Define temporary variables using unique prefix
 
 Registered variables and facts set using set_fact module are often defined for temporary usage.
 In order to avoid variable collision and make it clear to the reader that these variables are only for temporary usage,
 it is good practice to use a unique prefix.
 You could use r_ for registered variables and f_ for facts.
+
+✅ ***Good***
 
 ```yaml
 - name: Collect information from external system
@@ -476,7 +723,6 @@ Before using the `command` or `shell` module, verify if there is already a modul
 ✅ ***Good***
 
 ```yaml
-# good
 - name: install packages
   tasks:
     - name: 'install httpd'
@@ -487,7 +733,6 @@ Before using the `command` or `shell` module, verify if there is already a modul
 
 ❌ ***Bad***
 ```yaml
-# bad
 - name: install httpd
   tasks:
     - command: "yum install httpd"
@@ -504,7 +749,45 @@ Before using the `command` or `shell` module, verify if there is already a modul
 The ‘state’ parameter is optional to a lot of modules.
 Whether ‘state=present’ or ‘state=absent’, it’s always best to leave that parameter in your playbooks to make it clear, especially as some modules support additional states.
 
+✅ ***Good***
+
+```yaml
+- name: Example Simple Playbook
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: Copy file example_file to /tmp with permissions
+    ansible.builtin.copy:
+      src: ./example_file
+      dest: /tmp/example_file
+      mode: '0644'
+
+  - name: Add the user 'bob' with a specific uid 
+    ansible.builtin.user:
+      name: bob
+      state: present
+      uid: 1040
+
+- name: Update postgres servers
+  hosts: databases
+  become: yes
+
+  tasks:
+  - name: Ensure postgres DB is at the latest version
+    ansible.builtin.yum:
+      name: postgresql
+      state: latest
+
+  - name: Ensure that postgresql is started
+    ansible.builtin.service:
+      name: postgresql
+      state: started
+```
+
 ## Use Block-Module
+
+✅ ***Good***
 
 Block can help to organize the code and can enable rollbacks.
 ```yaml
@@ -524,6 +807,8 @@ Most of what you can apply to a single task (with the exception of loops) can be
 which also makes it much easier to set data or directives common to the tasks. This does not mean the directive affects the block itself,
 but is inherited by the tasks enclosed by a block.
 i.e. a when will be applied to the tasks, not the block itself.
+
+✅ ***Good***
 
 ```yaml
 tasks:
@@ -594,13 +879,9 @@ All Ansible Vault files should have a **.vault** extension (and NOT **.yml**, **
 
 ## Content Organization
 
-Your usage of Ansible should fit your needs, however, not ours, so feel free to modify this approach and organize as you see fit.
-
 Always try to use Ansible’s “roles” to organize your playbook content  organization feature.
 
-
-
-## Directory Layout
+### Directory Layout
 
 The top level of the directory should contain files and directories like so:
 This is the required preset for recognizing playbooks, tasks and variables by [OrchidE plugin](https://www.orchide.dev/pages/dokumentation).  
@@ -621,11 +902,15 @@ This is the required preset for recognizing playbooks, tasks and variables by [O
   |   |   |   |-- main.yml
 ```
 
-## Group And Host Variables
+Take care, that file structure for some roles can be completely generated with ansible galaxy.
+
+### Group And Host Variables
 
 Groups are nice for organization, but that’s not all groups are good for.
 You can also assign variables to them! For instance, atlanta has its own NTP servers, so when setting up ntp.conf, we should use them.
 Let’s set those now:
+
+✅ ***Good***
 
 ```yaml
 ---
@@ -636,6 +921,8 @@ backup: backup-atlanta.example.com
 
 Variables aren’t just for geographic information either! Maybe the webservers have some configuration that doesn’t make sense for the database servers:
 
+✅ ***Good***
+
 ```yaml
 ---
 # file: group_vars/webservers
@@ -645,6 +932,8 @@ apacheMaxClients: 900
 
 If we had any default values, or values that were universally true, we would put them in a file called group_vars/all:
 
+✅ ***Good***
+
 ```yaml
 ---
 # file: group_vars/all
@@ -653,6 +942,8 @@ backup: backup-boston.example.com
 ```
 
 We can define specific hardware variance in systems in a host_vars file, but avoid doing this unless you need to:
+
+✅ ***Good***
 
 ```yaml
 ---
@@ -664,9 +955,11 @@ bar_agent_port: 99
 Again, if we are using dynamic inventory sources, many dynamic groups are automatically created.
 So a tag like “class:webserver” would load in variables from the file “group_vars/ec2_tag_class_webserver” automatically.
 
-## Top Level Playbooks Are Separated By Role
+### Top Level Playbooks Are Separated By Role
 
 In site.yml, we import a playbook that defines our entire infrastructure. This is a very short example, because it’s just importing some other playbooks:
+
+✅ ***Good***
 
 ```yaml
 ---
@@ -676,6 +969,8 @@ In site.yml, we import a playbook that defines our entire infrastructure. This i
 ```
 
 In a file like webservers.yml (also at the top level), we map the configuration of the webservers group to the roles performed by the webservers group:
+
+✅ ***Good***
 
 ```yaml
 ---
@@ -695,7 +990,7 @@ ansible-playbook webservers.yml
 ```
 
 
-## Bundling Ansible Modules With Playbooks
+### Bundling Ansible Modules With Playbooks
 
 If a playbook has a ./library directory relative to its YAML file, this directory can be used to add ansible modules that will automatically be in the ansible module path.
 This is a great way to keep modules that go with a playbook together.
@@ -743,6 +1038,59 @@ A major difference between `import` and `include` tasks:
 
 **Note:** Regarding the use of `notify` for dynamic tasks:
 it is still possible to trigger the dynamic include itself, which would result in all tasks within the include being run.
+
+Here is a simple example on the ebove:
+
+✅ ***Good***
+
+```yaml
+---
+# main.yml
+
+- name: Include tasks
+  include_tasks: include_task.yml
+  # args:
+  #   apply:
+  #     tags: task
+  tags: task
+
+- name: Import tasks
+  import_tasks: import_task.yml
+  tags: task
+
+- name: Main task
+  debug:
+    msg: The main task
+  tags: main
+```
+```yaml
+---
+#include_task.yml:
+
+- name: Subtask3
+  debug:
+    msg: Subtask3 include
+  tags: task1
+
+- name: Subtask4
+  debug:
+    msg: Subtask4 include
+  tags: task2
+```
+```yaml
+---
+#import_task.yml:
+
+- name: Subtask1
+  debug:
+    msg: Subtask1 import
+  tags: task1
+
+- name: Subtask2
+  debug:
+    msg: Subtask2 import
+  tags: task2
+```
 
 ### Optimize Playbook Execution
 Disable facts gathering if it is not required.
@@ -807,6 +1155,8 @@ in `ansible.cfg` set
 * ControlPersist
 * PreferredAuthentications
 
+✅ ***Good***
+
 ```text
 [ssh_connection]
 ...
@@ -819,6 +1169,8 @@ ssh_args=-C -o ControlMaster=auto -o ControlPersist=1200s -o BatchMode=yes -o Pr
 
 reduces number of SSH operations
 
+✅ ***Good***
+
 ```text
 [ssh_connection]
 ...
@@ -827,12 +1179,3 @@ pipelining=true
 ```
 
 **Info:** this requires to disable `requiretty` in sudo options
-
-## Best practices
-
-Follow [Sample Ansible setup](https://docs.ansible.com/ansible/latest/tips_tricks/sample_setup.html) and use Ansible Lint, see [documentation](https://ansible.readthedocs.io/projects/lint/).
-
->**🔎 Why do this?**
->
->The guys and girls who created Ansible have a good understanding how playbooks work and where files should reside.
->You'll avoid a lot of your own ingenious pitfalls following their best practices.
