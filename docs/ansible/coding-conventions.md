@@ -30,7 +30,6 @@ in this document are to be interpreted as described in [RFC 2119](https://datatr
   * [Boolean variables](#boolean-variables)
     * [Comparing](#comparing)
   * [Use Modules instead of command or shell](#use-modules-instead-of-command-or-shell)
-  * [🔴 Spacing addons](#-spacing-addons)
   * [Always Mention The State](#always-mention-the-state)
   * [Use Block-Module](#use-block-module)
   * [Use lists](#use-lists)
@@ -741,8 +740,6 @@ Before using the `command` or `shell` module, verify if there is already a modul
 >**🔎 Why do this?**
 >
 >While raw command could be seen as a security risk in general, another reason to avoid them is the loss of immutability of the ansible playbooks or roles. Ansible cannot verify if a command has been already executed before or not and will therefore execute it every time the playbook is running.
-
-## 🔴 Spacing addons
 
 ## Always Mention The State
 
