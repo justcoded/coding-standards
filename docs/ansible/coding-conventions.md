@@ -479,12 +479,12 @@ A task should be declared in this order.
 ## Role names
 
 All the newly created Ansible roles should follow the name convention using dashes if necessary:
-`<vendor>-<action>-[function/technology]`
+`<vendor>_<action>[_function/technology]`
 
 ✅ ***Good***
 
 ```yaml
-jc-setup-lvm
+jc_setup_lvm
 ```
 
 ❌ ***Bad***
@@ -494,15 +494,20 @@ lvm
 
 ## Task names
 
+### File names
+
+**🔴 TODO:** Add the file name conventions
+
+Draft idea: using snake case, like it's shown in examples of official ansible documentation (may be find in examples of using import_tasks/include_tasks)
+
+
 ### Always name tasks
 
-It is possible to leave off the ‘name’ for a given task, though it is recommended to provide a description about why something is being done instead.
+It is possible to leave off the `name` for a given task, though it is recommended to provide a description about why something is being done instead.
 This name is shown when the playbook is run.
 
 
 ### Format for task names
-
-**🔴 TODO:** Add the file name conventions
 
 Always use the following format in task names:
 
@@ -867,7 +872,7 @@ tasks:
       - php-mysqlnd
 ```
 
-***Bad***
+❌ ***Bad***
 ```yaml
 tasks:
  - name: Ensure the packages are installed
@@ -1015,6 +1020,9 @@ Here is a simple example on the ebove:
 ```
 
 ### Optimize Playbook Execution
+
+**🔴 TODO:** Update all items here with examples if they are appropriate
+
 Disable facts gathering if it is not required.
 
 Try not to use: ansible_facts[‘hostname’] (or ‘nodename’)
