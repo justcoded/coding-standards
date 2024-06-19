@@ -6,7 +6,9 @@ in this document are to be interpreted as described in [RFC 2119](https://datatr
 <!-- TOC -->
 * [Justcoded Ansible Coding Style and Conventions](#justcoded-ansible-coding-style-and-conventions-)
 * [Coding style](#coding-style)
-  * [Playbook File Extension](#playbook-file-extension)
+  * [File extensions](#file-extensions)
+    * [Playbook File Extension](#playbook-file-extension)
+    * [Vault File Extension](#vault-file-extension)
   * [The beginning of a file](#the-beginning-of-a-file)
   * [The end of the file](#the-end-of-the-file)
   * [Spaces and alignment](#spaces-and-alignment)
@@ -15,15 +17,15 @@ in this document are to be interpreted as described in [RFC 2119](https://datatr
     * [Air and tabulators](#air-and-tabulators)
   * [Order in playbook](#order-in-playbook)
   * [Order in task declaration](#order-in-task-declaration)
+  * [Role names](#role-names)
   * [Task names](#task-names)
-    * [Names](#names)
     * [Always name tasks](#always-name-tasks)
     * [Format for task names](#format-for-task-names)
     * [Variables in Task Names](#variables-in-task-names)
     * [Omitting Unnecessary Information](#omitting-unnecessary-information)
   * [Variable names](#variable-names)
     * [Always use `snake_case` for variable names.](#always-use-snakecase-for-variable-names)
-    * [The prefix should contain the name of the role.](#the-prefix-should-contain-the-name-of-the-role)
+    * [The prefix should contain the name of the role or if it is longer than few chars - abbreviation of role name or first letter of it.](#the-prefix-should-contain-the-name-of-the-role-or-if-it-is-longer-than-few-chars---abbreviation-of-role-name-or-first-letter-of-it)
     * [Variable precedence](#variable-precedence)
     * [Define temporary variables using unique prefix](#define-temporary-variables-using-unique-prefix)
     * [Define paths without trailing slash](#define-paths-without-trailing-slash)
@@ -34,7 +36,6 @@ in this document are to be interpreted as described in [RFC 2119](https://datatr
   * [Use Block-Module](#use-block-module)
   * [Use lists](#use-lists)
 * [Coding conventions](#coding-conventions)
-  * [Vaults](#vaults)
   * [Content Organization](#content-organization)
     * [Directory Layout](#directory-layout)
     * [Group And Host Variables](#group-and-host-variables)
@@ -59,9 +60,15 @@ First of all, follow [Sample Ansible setup](https://docs.ansible.com/ansible/lat
 Use IDE plugins for autocomplete and validation, the best one is OrchidE (https://www.orchide.dev/)
 
 
-## Playbook File Extension
+## File extensions
+
+### Playbook File Extension
 
 All Ansible Yaml files should have a **.yml** extension (and NOT **.YML**, **.yaml** etc).
+
+### Vault File Extension
+
+All Ansible Vault files should have a **.vault** extension (and NOT **.yml**, **.YML**, **.yaml** etc).
 
 ## The beginning of a file
 
@@ -74,7 +81,7 @@ Please add comments above these lines with descriptions of what this playbook is
 # This playbook playbook changes state of user foo
 # Example: ansible-playbook -e state=stopped playbook.yml
 ---
-- name: Change status of user foo
+- name: main | Change status of user foo
   ansible.builtin.service:
     enabled: true
     name: foo
@@ -109,13 +116,13 @@ Always end the file with a line shift.
 
 ### Key/value pairs
 
-Only use on space after colon when you define key value pair.
+Only use one space after colon when you define key value pair.
 
 ✅ ***Good***
 
 ```yaml
 ---
-- name: start chrony NTP daemon
+- name: main | start chrony NTP daemon
   ansible.builtin.service:
     name: chrony
     state: started
@@ -142,7 +149,7 @@ This is regardless of how many key/value pairs that exist in a map.
 
 ```yaml
 ---
-- name: disable ntpd
+- name: main | disable ntpd
   ansible.builtin.service:
     name: '{{ ntp_service }}'
     state: stopped
@@ -180,7 +187,7 @@ Generous use of whitespace to break things up, and use of comments (which start 
 
 ```yaml
 ---
-- name: Install and Launch the Simple NodeJS Application
+- name: main | Install and Launch the Simple NodeJS Application
   hosts: testserver
 
   vars_files:
@@ -401,7 +408,7 @@ Playbook definitions should follow this order.
 ✅ ***Good***
 ```yaml
 ---
-- name: update root authorized_keys for all machines
+- name: main | update root authorized_keys for all machines
   hosts:
     - all
   become: true
@@ -443,7 +450,7 @@ A task should be declared in this order.
 ✅ ***Good***
 ```yaml
 ---
-- name: unhold packages
+- name: main | unhold packages
   ansible.builtin.shell: 'apt-mark -s unhold {{ item }} && apt-mark unhold {{ item }}'
   args:
     #chdir:      # change dir before execution
@@ -465,10 +472,7 @@ A task should be declared in this order.
     - apt_unhold
 ---
 ```
-
-## Task names
-
-### Names
+## Role names
 
 All the newly created Ansible roles should follow the name convention using dashes if necessary:
 `<vendor>-<action>-[function/technology]`
@@ -484,12 +488,17 @@ jc-setup-lvm
 lvm
 ```
 
+## Task names
+
 ### Always name tasks
 
 It is possible to leave off the ‘name’ for a given task, though it is recommended to provide a description about why something is being done instead.
 This name is shown when the playbook is run.
 
+
 ### Format for task names
+
+**🔴 TODO:** Add the file name conventions
 
 Always use the following format in task names:
 
@@ -498,7 +507,7 @@ Always use the following format in task names:
 ✅ ***Good***
 
 ```yaml
-- name: 'SwitchHttpdStatus | Change status of httpd to {{ state }}'
+- name: 'switch_httpd_status | Change status of httpd to {{ state }}'
 ```
 
 ❌ ***Bad***
@@ -519,7 +528,7 @@ Make usage of variables inside a task name to create dynamic output messages.
 ✅ ***Good***
 
 ```yaml
-- name: 'Change status of httpd to {{ state }}'
+- name: 'main | Change status of httpd to {{ state }}'
   service:
   enabled: true
   name: 'httpd'
@@ -556,7 +565,7 @@ While name tasks in a playbook, do not include the name of the role which is cur
 
 ```yaml
 ---
-- name: set my variables
+- name: main | set my variables
   ansible.builtin.set_fact:
     a_boolean: false
     an_int: 101
@@ -577,18 +586,20 @@ While name tasks in a playbook, do not include the name of the role which is cur
 >
 >Ansible already uses `snake_case` for variables in it's examples. Consistent naming of variables keeps the code tidy and gives better readability.
 
-### The prefix should contain the name of the role.
+### The prefix should contain the name of the role or if it is longer than few chars - abbreviation of role name or first letter of it.
 
 ✅ ***Good***
 
 ```yaml
 ---
-- name: 'set some facts'
+- name: 'main | set some facts'
   set_fact:
-    rolename_my_boolean: true
-    rolename_my_int: 20
-    rolename_my_string: 'test'
+    # in a role named test_role
+    tr_my_boolean: true
+    tr_my_int: 20
+    tr_my_string: 'test'
 ```
+
 
 ❌ ***Bad***
 
@@ -630,12 +641,12 @@ http_port: 8080
 Registered variables and facts set using set_fact module are often defined for temporary usage.
 In order to avoid variable collision and make it clear to the reader that these variables are only for temporary usage,
 it is good practice to use a unique prefix.
-You could use r_ for registered variables and f_ for facts.
+You could use `r_` for registered variables and `f_` for facts.
 
 ✅ ***Good***
 
 ```yaml
-- name: Collect information from external system
+- name: main | Collect information from external system
   uri:
     url: http://www.example.com
     return_content: yes
@@ -673,7 +684,7 @@ Always use **false** and **true** values for boolean.
 ✅ ***Good***
 ```yaml
 ---
-- name: start chrony NTP daemon
+- name: main | start chrony NTP daemon
   ansible.builtin.service:
     name: chrony
     state: started
@@ -722,7 +733,7 @@ Before using the `command` or `shell` module, verify if there is already a modul
 ✅ ***Good***
 
 ```yaml
-- name: install packages
+- name: main | install packages
   tasks:
     - name: 'install httpd'
       yum:
@@ -749,7 +760,7 @@ Whether ‘state=present’ or ‘state=absent’, it’s always best to leave t
 ✅ ***Good***
 
 ```yaml
-- name: Example Simple Playbook
+- name: main | Example Simple Playbook
   hosts: all
   become: yes
 
@@ -766,7 +777,7 @@ Whether ‘state=present’ or ‘state=absent’, it’s always best to leave t
       state: present
       uid: 1040
 
-- name: Update postgres servers
+- name: main | Update postgres servers
   hosts: databases
   become: yes
 
@@ -839,17 +850,17 @@ Use lists when ever a modules support it (i.e. yum):
 ✅ ***Good***
 ```yaml
 tasks:
-- name: Ensure the packages are installed
+- name: main | Ensure the packages are installed
   yum:
-  state: present
-  name:
-  - httpd
-  - mod_ssl
-  - httpd-tools
-  - mariadb-server
-  - mariadb
-  - php
-  - php-mysqlnd
+    state: present
+    name:
+      - httpd
+      - mod_ssl
+      - httpd-tools
+      - mariadb-server
+      - mariadb
+      - php
+      - php-mysqlnd
 ```
 
 ***Bad***
@@ -869,10 +880,6 @@ tasks:
      - php-mysqlnd
 ```
 # Coding conventions
-
-## Vaults
-
-All Ansible Vault files should have a **.vault** extension (and NOT **.yml**, **.YML**, **.yaml** etc).
 
 ## Content Organization
 
@@ -1044,18 +1051,18 @@ Here is a simple example on the ebove:
 ---
 # main.yml
 
-- name: Include tasks
+- name: main | Include tasks
   include_tasks: include_task.yml
   # args:
   #   apply:
   #     tags: task
   tags: task
 
-- name: Import tasks
+- name: main | Import tasks
   import_tasks: import_task.yml
   tags: task
 
-- name: Main task
+- name: main | Main task
   debug:
     msg: The main task
   tags: main
@@ -1064,12 +1071,12 @@ Here is a simple example on the ebove:
 ---
 #include_task.yml:
 
-- name: Subtask3
+- name: main | Subtask3
   debug:
     msg: Subtask3 include
   tags: task1
 
-- name: Subtask4
+- name: main | Subtask4
   debug:
     msg: Subtask4 include
   tags: task2
@@ -1078,12 +1085,12 @@ Here is a simple example on the ebove:
 ---
 #import_task.yml:
 
-- name: Subtask1
+- name: main | Subtask1
   debug:
     msg: Subtask1 import
   tags: task1
 
-- name: Subtask2
+- name: main | Subtask2
   debug:
     msg: Subtask2 import
   tags: task2
