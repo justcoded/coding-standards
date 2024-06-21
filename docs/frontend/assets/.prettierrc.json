@@ -1,0 +1,17 @@
+{
+  "printWidth": 100,
+  "quoteProps": "consistent",
+  "singleQuote": true,
+  "tabWidth": 4,
+  "proseWrap": "always",
+  "pugSingleQuote": false,
+  "pugAttributeSeparator": "none",
+  "overrides": [
+    {
+      "files": "*.{css,scss,yml,yaml,js,vue,ts,json}",
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
+}
