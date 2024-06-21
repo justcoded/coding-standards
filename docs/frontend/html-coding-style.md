@@ -217,13 +217,13 @@ required="required"
 
 Single-line comments MUST be on one line, and text inside MUST be surrounded by spaces.
 
-❌ ***Good***
+✅ ***Good***
 
 ```HTML
 <!-- This is a comment -->
 ```
 
-✅ ***Bad***
+❌ ***Bad***
 
 ```HTML
 <!--
